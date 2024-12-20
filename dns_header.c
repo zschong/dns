@@ -46,7 +46,7 @@ bool dns_header_set_flags(dns_header_t *header, uint16_t flags)
     return true;
 }
 
-bool dns_header_set_questions(dns_header_t *header, uint16_t questions_count)
+bool dns_header_set_question_count(dns_header_t *header, uint16_t questions_count)
 {
     if (NULL == header) {
         return false;
@@ -57,7 +57,7 @@ bool dns_header_set_questions(dns_header_t *header, uint16_t questions_count)
     return true;
 }
 
-bool dns_header_set_answer_rrs(dns_header_t *header, uint16_t answers_count)
+bool dns_header_set_answer_count(dns_header_t *header, uint16_t answers_count)
 {
     if (NULL == header) {
         return false;
@@ -68,7 +68,7 @@ bool dns_header_set_answer_rrs(dns_header_t *header, uint16_t answers_count)
     return true;
 }
 
-bool dns_header_set_authority_rrs(dns_header_t *header, uint16_t authorities_count)
+bool dns_header_set_authority_count(dns_header_t *header, uint16_t authorities_count)
 {
     if (NULL == header) {
         return false;
@@ -79,7 +79,7 @@ bool dns_header_set_authority_rrs(dns_header_t *header, uint16_t authorities_cou
     return true;
 }
 
-bool dns_header_set_additional_rrs(dns_header_t *header, uint16_t additional_count)
+bool dns_header_set_additional_count(dns_header_t *header, uint16_t additional_count)
 {
     if (NULL == header) {
         return false;
@@ -108,7 +108,7 @@ uint16_t dns_header_get_flags(dns_header_t *header)
     return header->flags;
 }
 
-uint16_t dns_header_get_questions(dns_header_t *header)
+uint16_t dns_header_get_question_count(dns_header_t *header)
 {
     if (NULL == header) {
         return 0;
@@ -117,7 +117,7 @@ uint16_t dns_header_get_questions(dns_header_t *header)
     return header->questions_count;
 }
 
-uint16_t dns_header_get_answer_rrs(dns_header_t *header)
+uint16_t dns_header_get_answer_count(dns_header_t *header)
 {
     if (NULL == header) {
         return 0;
@@ -126,7 +126,7 @@ uint16_t dns_header_get_answer_rrs(dns_header_t *header)
     return header->answers_count;
 }
 
-uint16_t dns_header_get_authority_rrs(dns_header_t *header)
+uint16_t dns_header_get_authority_count(dns_header_t *header)
 {
     if (NULL == header) {
         return 0;
@@ -135,7 +135,7 @@ uint16_t dns_header_get_authority_rrs(dns_header_t *header)
     return header->authorities_count;
 }
 
-uint16_t dns_header_get_additional_rrs(dns_header_t *header)
+uint16_t dns_header_get_additional_count(dns_header_t *header)
 {
     if (NULL == header) {
         return 0;

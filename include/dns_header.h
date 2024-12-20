@@ -60,7 +60,7 @@ bool dns_header_set_flags(dns_header_t *header, uint16_t flags);
  * @param questions_count : 问题记录数
  * @return true     : 设置成功, false : 设置失败
  */
-bool dns_header_set_questions(dns_header_t *header, uint16_t questions_count);
+bool dns_header_set_question_count(dns_header_t *header, uint16_t questions_count);
 ;
 
 /**
@@ -69,7 +69,7 @@ bool dns_header_set_questions(dns_header_t *header, uint16_t questions_count);
  * @param answers_count : 回答记录数
  * @return true      : 设置成功, false : 设置失败
  */
-bool dns_header_set_answer_rrs(dns_header_t *header, uint16_t answers_count);
+bool dns_header_set_answer_count(dns_header_t *header, uint16_t answers_count);
 ;
 
 /**
@@ -78,7 +78,7 @@ bool dns_header_set_answer_rrs(dns_header_t *header, uint16_t answers_count);
  * @param authorities_count : 权威记录数
  * @return true         : 设置成功, false : 设置失败
  */
-bool dns_header_set_authority_rrs(dns_header_t *header, uint16_t authorities_count);
+bool dns_header_set_authority_count(dns_header_t *header, uint16_t authorities_count);
 ;
 
 /**
@@ -87,7 +87,7 @@ bool dns_header_set_authority_rrs(dns_header_t *header, uint16_t authorities_cou
  * @param additional_count : 附加记录数
  * @return true          : 设置成功, false : 设置失败
  */
-bool dns_header_set_additional_rrs(dns_header_t *header, uint16_t additional_count);
+bool dns_header_set_additional_count(dns_header_t *header, uint16_t additional_count);
 ;
 
 /**
@@ -111,7 +111,7 @@ uint16_t dns_header_get_flags(dns_header_t *header);
  * @param header : DNS 头部指针
  * @return uint16_t : 问题记录数
  */
-uint16_t dns_header_get_questions(dns_header_t *header);
+uint16_t dns_header_get_question_count(dns_header_t *header);
 ;
 
 /**
@@ -119,7 +119,7 @@ uint16_t dns_header_get_questions(dns_header_t *header);
  * @param header : DNS 头部指针
  * @return uint16_t : 回答记录数
  */
-uint16_t dns_header_get_answer_rrs(dns_header_t *header);
+uint16_t dns_header_get_answer_count(dns_header_t *header);
 ;
 
 /**
@@ -127,7 +127,7 @@ uint16_t dns_header_get_answer_rrs(dns_header_t *header);
  * @param header : DNS 头部指针
  * @return uint16_t : 权威记录数
  */
-uint16_t dns_header_get_authority_rrs(dns_header_t *header);
+uint16_t dns_header_get_authority_count(dns_header_t *header);
 ;
 
 /**
@@ -135,7 +135,7 @@ uint16_t dns_header_get_authority_rrs(dns_header_t *header);
  * @param header : DNS 头部指针
  * @return uint16_t : 附加记录数
  */
-uint16_t dns_header_get_additional_rrs(dns_header_t *header);
+uint16_t dns_header_get_additional_count(dns_header_t *header);
 ;
 
 /**
