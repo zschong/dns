@@ -5,7 +5,7 @@
  * @param flags: 包含DNS标志的16位无符号整数
  * @return int: QR值，0表示查询报文，1表示响应报文
  */
-int dns_flags_get_qr(uint16_t flags)
+dns_qr_t dns_flags_get_qr(uint16_t flags)
 {
     return (flags >> DNS_FLAGS_INDEX_QR) & 0x01;
 }
@@ -15,7 +15,7 @@ int dns_flags_get_qr(uint16_t flags)
  * @param flags: 包含DNS标志的16位无符号整数
  * @return int: OPCODE值，0-15，表示不同的操作码
  */
-int dns_flags_get_opcode(uint16_t flags)
+dns_opcode_t dns_flags_get_opcode(uint16_t flags)
 {
     return (flags >> DNS_FLAGS_INDEX_OPCODE) & 0x0F;
 }
@@ -25,7 +25,7 @@ int dns_flags_get_opcode(uint16_t flags)
  * @param flags: 包含DNS标志的16位无符号整数
  * @return int: AA值，0表示非权威回答，1表示权威回答
  */
-int dns_flags_get_aa(uint16_t flags)
+dns_aa_t dns_flags_get_aa(uint16_t flags)
 {
     return (flags >> DNS_FLAGS_INDEX_AA) & 0x01;
 }
@@ -35,7 +35,7 @@ int dns_flags_get_aa(uint16_t flags)
  * @param flags: 包含DNS标志的16位无符号整数
  * @return int: TC值，0表示未截断，1表示已截断
  */
-int dns_flags_get_tc(uint16_t flags)
+dns_tc_t dns_flags_get_tc(uint16_t flags)
 {
     return (flags >> DNS_FLAGS_INDEX_TC) & 0x01;
 }
@@ -45,7 +45,7 @@ int dns_flags_get_tc(uint16_t flags)
  * @param flags: 包含DNS标志的16位无符号整数
  * @return int: RD值，0表示不希望递归，1表示希望递归
  */
-int dns_flags_get_rd(uint16_t flags)
+dns_rd_t dns_flags_get_rd(uint16_t flags)
 {
     return (flags >> DNS_FLAGS_INDEX_RD) & 0x01;
 }
@@ -55,7 +55,7 @@ int dns_flags_get_rd(uint16_t flags)
  * @param flags: 包含DNS标志的16位无符号整数
  * @return int: RA值，0表示递归不可用，1表示递归可用
  */
-int dns_flags_get_ra(uint16_t flags)
+dns_ra_t dns_flags_get_ra(uint16_t flags)
 {
     return (flags >> DNS_FLAGS_INDEX_RA) & 0x01;
 }
@@ -65,7 +65,7 @@ int dns_flags_get_ra(uint16_t flags)
  * @param flags: 包含DNS标志的16位无符号整数
  * @return int: RCODE值，0-15，表示响应状态码
  */
-int dns_flags_get_rcode(uint16_t flags)
+dns_rcode_t dns_flags_get_rcode(uint16_t flags)
 {
     return flags & 0x0F;
 }

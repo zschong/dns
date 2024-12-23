@@ -33,17 +33,23 @@ const char *dns_flags_stringify_opcode(uint16_t flags, char *buf, uint32_t buf_s
     if (NULL == buf || buf_size < 1) {
         return NULL;
     }
-    int         opcode = dns_flags_get_opcode(flags);
+    dns_opcode_t opcode = dns_flags_get_opcode(flags);
     const char *opcode_desc;
     switch (opcode) {
-    case 0:
+    case DNS_OPCODE_QUERY:
         opcode_desc = "Standard Query";
         break;
-    case 1:
+    case DNS_OPCODE_IQUERY:
         opcode_desc = "Inverse Query";
         break;
-    case 2:
+    case DNS_OPCODE_STATUS:
         opcode_desc = "Server Status Request";
+        break;
+    case DNS_OPCODE_NOTIFY:
+        opcode_desc = "Zone Change Notification";
+        break;
+    case DNS_OPCODE_UPDATE:
+        opcode_desc = "Zone Update Message";
         break;
     default:
         opcode_desc = "Reserved";

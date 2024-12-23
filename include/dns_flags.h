@@ -126,7 +126,7 @@ typedef enum {
  * @param qr: QR值，0表示查询报文，1表示响应报文
  * @return bool: 设置成功返回true，否则返回false
  */
-bool dns_flags_set_qr(uint16_t *flags, int qr);
+bool dns_flags_set_qr(uint16_t *flags, dns_qr_t qr);
 
 /**
  * @brief 设置OPCODE标志位
@@ -134,7 +134,7 @@ bool dns_flags_set_qr(uint16_t *flags, int qr);
  * @param opcode: OPCODE值，0-15，表示不同的操作码
  * @return bool: 设置成功返回true，否则返回false
  */
-bool dns_flags_set_opcode(uint16_t *flags, int opcode);
+bool dns_flags_set_opcode(uint16_t *flags, dns_opcode_t opcode);
 
 /**
  * @brief 设置AA标志位
@@ -142,7 +142,7 @@ bool dns_flags_set_opcode(uint16_t *flags, int opcode);
  * @param aa: AA值，0表示非权威回答，1表示权威回答
  * @return bool: 设置成功返回true，否则返回false
  */
-bool dns_flags_set_aa(uint16_t *flags, int aa);
+bool dns_flags_set_aa(uint16_t *flags, dns_aa_t aa);
 
 /**
  * @brief 设置TC标志位
@@ -150,7 +150,7 @@ bool dns_flags_set_aa(uint16_t *flags, int aa);
  * @param tc: TC值，0表示未截断，1表示已截断
  * @return bool: 设置成功返回true，否则返回false
  */
-bool dns_flags_set_tc(uint16_t *flags, int tc);
+bool dns_flags_set_tc(uint16_t *flags, dns_tc_t tc);
 
 /**
  * @brief 设置RD标志位
@@ -158,7 +158,7 @@ bool dns_flags_set_tc(uint16_t *flags, int tc);
  * @param rd: RD值，0表示不希望递归，1表示希望递归
  * @return bool: 设置成功返回true，否则返回false
  */
-bool dns_flags_set_rd(uint16_t *flags, int rd);
+bool dns_flags_set_rd(uint16_t *flags, dns_rd_t rd);
 
 /**
  * @brief 设置RA标志位
@@ -166,7 +166,7 @@ bool dns_flags_set_rd(uint16_t *flags, int rd);
  * @param ra: RA值，0表示递归不可用，1表示递归可用
  * @return bool: 设置成功返回true，否则返回false
  */
-bool dns_flags_set_ra(uint16_t *flags, int ra);
+bool dns_flags_set_ra(uint16_t *flags, dns_ra_t ra);
 
 /**
  * @brief 设置RCODE标志位
@@ -174,56 +174,56 @@ bool dns_flags_set_ra(uint16_t *flags, int ra);
  * @param rcode: RCODE值，0-15，表示响应状态码
  * @return bool: 设置成功返回true，否则返回false
  */
-bool dns_flags_set_rcode(uint16_t *flags, int rcode);
+bool dns_flags_set_rcode(uint16_t *flags, dns_rcode_t rcode);
 
 /**
  * @brief 获取QR标志位的值
  * @param flags: 包含DNS标志的16位无符号整数
  * @return int: QR值，0表示查询报文，1表示响应报文
  */
-int  dns_flags_get_qr(uint16_t flags);
+dns_qr_t  dns_flags_get_qr(uint16_t flags);
 
 /**
  * @brief 获取OPCODE标志位的值
  * @param flags: 包含DNS标志的16位无符号整数
  * @return int: OPCODE值，0-15，表示不同的操作码
  */
-int  dns_flags_get_opcode(uint16_t flags);
+dns_opcode_t  dns_flags_get_opcode(uint16_t flags);
 
 /**
  * @brief 获取AA标志位的值
  * @param flags: 包含DNS标志的16位无符号整数
  * @return int: AA值，0表示非权威回答，1表示权威回答
  */
-int  dns_flags_get_aa(uint16_t flags);
+dns_aa_t  dns_flags_get_aa(uint16_t flags);
 
 /**
  * @brief 获取TC标志位的值
  * @param flags: 包含DNS标志的16位无符号整数
  * @return int: TC值，0表示未截断，1表示已截断
  */
-int  dns_flags_get_tc(uint16_t flags);
+dns_tc_t  dns_flags_get_tc(uint16_t flags);
 
 /**
  * @brief 获取RD标志位的值
  * @param flags: 包含DNS标志的16位无符号整数
  * @return int: RD值，0表示不希望递归，1表示希望递归
  */
-int  dns_flags_get_rd(uint16_t flags);
+dns_rd_t  dns_flags_get_rd(uint16_t flags);
 
 /**
  * @brief 获取RA标志位的值
  * @param flags: 包含DNS标志的16位无符号整数
  * @return int: RA值，0表示递归不可用，1表示递归可用
  */
-int  dns_flags_get_ra(uint16_t flags);
+dns_ra_t  dns_flags_get_ra(uint16_t flags);
 
 /**
  * @brief 获取RCODE标志位的值
  * @param flags: 包含DNS标志的16位无符号整数
  * @return int: RCODE值，0-15，表示响应状态码
  */
-int  dns_flags_get_rcode(uint16_t flags);
+dns_rcode_t  dns_flags_get_rcode(uint16_t flags);
 ;
 
 /**
