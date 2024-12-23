@@ -5,6 +5,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #define DNS_HEADER_SIZE 12
 
@@ -95,7 +96,7 @@ bool dns_header_set_additional_count(dns_header_t *header, uint16_t additional_c
  * @param header : DNS 头部指针
  * @return uint16_t : DNS 消息标识符
  */
-uint16_t dns_header_get_id(dns_header_t *header);
+uint16_t dns_header_get_id(const dns_header_t *header);
 ;
 
 /**
@@ -103,7 +104,7 @@ uint16_t dns_header_get_id(dns_header_t *header);
  * @param header : DNS 头部指针
  * @return uint16_t : DNS 消息标志
  * */
-uint16_t dns_header_get_flags(dns_header_t *header);
+uint16_t dns_header_get_flags(const dns_header_t *header);
 ;
 
 /**
@@ -111,7 +112,7 @@ uint16_t dns_header_get_flags(dns_header_t *header);
  * @param header : DNS 头部指针
  * @return uint16_t : 问题记录数
  */
-uint16_t dns_header_get_question_count(dns_header_t *header);
+uint16_t dns_header_get_question_count(const dns_header_t *header);
 ;
 
 /**
@@ -119,7 +120,7 @@ uint16_t dns_header_get_question_count(dns_header_t *header);
  * @param header : DNS 头部指针
  * @return uint16_t : 回答记录数
  */
-uint16_t dns_header_get_answer_count(dns_header_t *header);
+uint16_t dns_header_get_answer_count(const dns_header_t *header);
 ;
 
 /**
@@ -127,7 +128,7 @@ uint16_t dns_header_get_answer_count(dns_header_t *header);
  * @param header : DNS 头部指针
  * @return uint16_t : 权威记录数
  */
-uint16_t dns_header_get_authority_count(dns_header_t *header);
+uint16_t dns_header_get_authority_count(const dns_header_t *header);
 ;
 
 /**
@@ -135,7 +136,7 @@ uint16_t dns_header_get_authority_count(dns_header_t *header);
  * @param header : DNS 头部指针
  * @return uint16_t : 附加记录数
  */
-uint16_t dns_header_get_additional_count(dns_header_t *header);
+uint16_t dns_header_get_additional_count(const dns_header_t *header);
 ;
 
 /**
@@ -165,7 +166,7 @@ uint32_t dns_header_deserialize(dns_header_t *header, const uint8_t *data, uint1
  * @param buf_size : 字符串缓冲区大小
  * @return const char* : 字符串
  */
-const char *dns_header_to_string(dns_header_t *header, char *buf, uint32_t buf_size);
+const char *dns_header_to_string(const dns_header_t *header, char *buf, uint32_t buf_size);
 ;
 
 #ifdef __cplusplus

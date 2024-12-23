@@ -79,7 +79,18 @@ bool dns_record_set_class(dns_record_t *record, dns_class_t rclass)
         return false;
     }
 
-    record->rclass = rclass;
+    switch(rclass) {
+        case DNS_CLASS_IN:
+        case DNS_CLASS_CS:
+        case DNS_CLASS_CH:
+        case DNS_CLASS_HS:
+        case DNS_CLASS_ANY:
+            record->rclass = rclass;
+            break;
+        default:
+            return false;
+    }
+
     return true;
 }
 
@@ -373,7 +384,7 @@ int main()
     str = dns_record_to_string(&record2, buf, sizeof(buf));
     printf("record2:%s\n", str ? str:"NULL");
 
-    printf("%s\n", dns_record_compare(&record, &record2) ? "record1 == record2" : "record1 != record2");
+    printf("%s\n", dns_record_equal(&record, &record2) ? "record1 == record2" : "record1 != record2");
     return 0;
 }
 #endif // DNS_RECORD_TEST

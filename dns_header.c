@@ -90,7 +90,7 @@ bool dns_header_set_additional_count(dns_header_t *header, uint16_t additional_c
     return true;
 }
 
-uint16_t dns_header_get_id(dns_header_t *header)
+uint16_t dns_header_get_id(const dns_header_t *header)
 {
     if (NULL == header) {
         return 0;
@@ -99,7 +99,7 @@ uint16_t dns_header_get_id(dns_header_t *header)
     return header->id;
 }
 
-uint16_t dns_header_get_flags(dns_header_t *header)
+uint16_t dns_header_get_flags(const dns_header_t *header)
 {
     if (NULL == header) {
         return 0;
@@ -108,7 +108,7 @@ uint16_t dns_header_get_flags(dns_header_t *header)
     return header->flags;
 }
 
-uint16_t dns_header_get_question_count(dns_header_t *header)
+uint16_t dns_header_get_question_count(const dns_header_t *header)
 {
     if (NULL == header) {
         return 0;
@@ -117,7 +117,7 @@ uint16_t dns_header_get_question_count(dns_header_t *header)
     return header->questions_count;
 }
 
-uint16_t dns_header_get_answer_count(dns_header_t *header)
+uint16_t dns_header_get_answer_count(const dns_header_t *header)
 {
     if (NULL == header) {
         return 0;
@@ -126,7 +126,7 @@ uint16_t dns_header_get_answer_count(dns_header_t *header)
     return header->answers_count;
 }
 
-uint16_t dns_header_get_authority_count(dns_header_t *header)
+uint16_t dns_header_get_authority_count(const dns_header_t *header)
 {
     if (NULL == header) {
         return 0;
@@ -135,7 +135,7 @@ uint16_t dns_header_get_authority_count(dns_header_t *header)
     return header->authorities_count;
 }
 
-uint16_t dns_header_get_additional_count(dns_header_t *header)
+uint16_t dns_header_get_additional_count(const dns_header_t *header)
 {
     if (NULL == header) {
         return 0;
@@ -192,26 +192,34 @@ uint32_t dns_header_deserialize(dns_header_t *header, const uint8_t *data, uint1
     return ptr - data;
 }
 
-const char *dns_header_to_string(dns_header_t *header, char *buf, uint32_t buf_size)
+const char *dns_header_to_string(const dns_header_t *header, char *buf, uint32_t buf_size)
 {
     if (NULL == header || buf == NULL || buf_size == 0) {
         return NULL;
     }
+
+    uint8_t serialize_buf[sizeof(dns_header_t) * 2 + 1];
+    int serialize_len = dns_header_serialize(header, serialize_buf, sizeof(serialize_buf));
+    if (serialize_len <= 0) {
+        return NULL;
+    }
+
     char flags_buf[512];
     char hexbuf[256];
 
     dns_flags_to_string(header->flags, flags_buf, sizeof(flags_buf));
     snprintf(buf,
              buf_size,
-             "DNS Header:[%s]\n"
+             "DNS Header(%d):[%s]\n"
              "  ID              : %d\n"
-             "  Questions       : %d\n"
-             "  Answer RRs      : %d\n"
-             "  Authority RRs   : %d\n"
-             "  Additional RRs  : %d\n"
+             "  Question Count  : %d\n"
+             "  Answer Count    : %d\n"
+             "  Authority Count : %d\n"
+             "  Additional Count: %d\n"
              "  Flags           : \n"
              "%s",
-             dns_hexstring((uint8_t *)header, sizeof(dns_header_t), hexbuf, sizeof(hexbuf)),
+             serialize_len,
+             dns_hexstring((uint8_t *)serialize_buf, serialize_len, hexbuf, sizeof(hexbuf)),
              header->id,
              header->questions_count,
              header->answers_count,
@@ -240,7 +248,7 @@ int main(void)
     dns_flags_set_ra    (&header.flags, DNS_RA_NO        );
     dns_flags_set_rcode (&header.flags, DNS_RCODE_NOERROR);
 
-    header.id                = 1234;
+    header.id                = 0x1234;
     header.questions_count   = 1;
     header.answers_count     = 0;
     header.authorities_count = 0;
