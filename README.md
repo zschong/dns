@@ -10,8 +10,8 @@ DNS_FLAGS_SRC  := dns_flags_get.c\
 DNS_HEAD_SRC   := dns_header.c
 DNS_TYPE_SRC   := dns_type.c
 DNS_CLASS_SRC  := dns_class.c
-DNS_QUERY_SRC  := dns_query.c
-DNS_RECORD_SRC := dns_record.c
+DNS_QUERY_SRC  := dns_question.c
+DNS_RECORD_SRC := dns_answer.c
 DNS_NAME_SRC   := dns_name.c
 DNS_HEX_SRC    := dns_hexstring.c
 DNS_BIN_SRC    := dns_binstring.c
@@ -22,10 +22,10 @@ dns_flags.exe: $(DNS_FLAGS_SRC)
 dns_header.exe: $(DNS_HEAD_SRC) $(DNS_FLAGS_SRC) $(DNS_HEX_SRC) $(DNS_BIN_SRC)
 	$(CC) $(CFLAGS) $+ -o $@ -DDNS_HEADER_TEST
 
-dns_query.exe: $(DNS_QUERY_SRC) $(DNS_TYPE_SRC) $(DNS_CLASS_SRC) $(DNS_NAME_SRC) $(DNS_HEX_SRC)
+dns_question.exe: $(DNS_QUERY_SRC) $(DNS_TYPE_SRC) $(DNS_CLASS_SRC) $(DNS_NAME_SRC) $(DNS_HEX_SRC)
 	$(CC) $(CFLAGS) $+ -o $@ -DDNS_QUERY_TEST
 
-dns_record.exe: $(DNS_RECORD_SRC) $(DNS_TYPE_SRC) $(DNS_CLASS_SRC) $(DNS_NAME_SRC) $(DNS_HEX_SRC)
+dns_answer.exe: $(DNS_RECORD_SRC) $(DNS_TYPE_SRC) $(DNS_CLASS_SRC) $(DNS_NAME_SRC) $(DNS_HEX_SRC)
 	$(CC) $(CFLAGS) $+ -o $@ -DDNS_RECORD_TEST
 
 dns_name.exe: $(DNS_NAME_SRC)

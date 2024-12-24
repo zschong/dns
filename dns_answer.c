@@ -4,20 +4,20 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "dns_name.h"
-#include "dns_record.h"
+#include "dns_answer.h"
 #include "dns_hexstring.h"
 
-bool dns_record_init(dns_record_t *record)
+bool dns_answer_init(dns_answer_t *record)
 {
     if (record == NULL) {
         return false;
     }
 
-    memset(record, 0, sizeof(dns_record_t));
+    memset(record, 0, sizeof(dns_answer_t));
     return true;
 }
 
-bool dns_record_clear(dns_record_t *record)
+bool dns_answer_clear(dns_answer_t *record)
 {
     if (record == NULL) {
         return false;
@@ -33,11 +33,11 @@ bool dns_record_clear(dns_record_t *record)
         record->rdata = NULL;
     }
 
-    memset(record, 0, sizeof(dns_record_t));
+    memset(record, 0, sizeof(dns_answer_t));
     return true;
 }
 
-bool dns_record_set_name(dns_record_t *record, const char *name)
+bool dns_answer_set_name(dns_answer_t *record, const char *name)
 {
     if (NULL == record || NULL == name) {
         return false;
@@ -63,7 +63,7 @@ bool dns_record_set_name(dns_record_t *record, const char *name)
     return true;
 }
 
-bool dns_record_set_type(dns_record_t *record, dns_type_t rtype)
+bool dns_answer_set_type(dns_answer_t *record, dns_type_t rtype)
 {
     if (record == NULL) {
         return false;
@@ -73,7 +73,7 @@ bool dns_record_set_type(dns_record_t *record, dns_type_t rtype)
     return true;
 }
 
-bool dns_record_set_class(dns_record_t *record, dns_class_t rclass)
+bool dns_answer_set_class(dns_answer_t *record, dns_class_t rclass)
 {
     if (record == NULL) {
         return false;
@@ -94,7 +94,7 @@ bool dns_record_set_class(dns_record_t *record, dns_class_t rclass)
     return true;
 }
 
-bool dns_record_set_ttl(dns_record_t *record, uint32_t ttl)
+bool dns_answer_set_ttl(dns_answer_t *record, uint32_t ttl)
 {
     if (record == NULL) {
         return false;
@@ -104,7 +104,7 @@ bool dns_record_set_ttl(dns_record_t *record, uint32_t ttl)
     return true;
 }
 
-bool dns_record_set_data(dns_record_t *record, const uint8_t *data, uint16_t length)
+bool dns_answer_set_data(dns_answer_t *record, const uint8_t *data, uint16_t length)
 {
     if (NULL == record || NULL == data || length < 1) {
         return false;
@@ -126,7 +126,7 @@ bool dns_record_set_data(dns_record_t *record, const uint8_t *data, uint16_t len
     return true;
 }
 
-const char* dns_record_get_name(const dns_record_t *record)
+const char* dns_answer_get_name(const dns_answer_t *record)
 {
     if (NULL == record) {
         return NULL;
@@ -135,7 +135,7 @@ const char* dns_record_get_name(const dns_record_t *record)
     return record->rname;
 }
 
-uint16_t dns_record_get_type(const dns_record_t *record)
+uint16_t dns_answer_get_type(const dns_answer_t *record)
 {
     if (NULL == record) {
         return 0;
@@ -144,7 +144,7 @@ uint16_t dns_record_get_type(const dns_record_t *record)
     return record->rtype;
 }
 
-uint16_t dns_record_get_class(const dns_record_t *record)
+uint16_t dns_answer_get_class(const dns_answer_t *record)
 {
     if (NULL == record) {
         return 0;
@@ -153,7 +153,7 @@ uint16_t dns_record_get_class(const dns_record_t *record)
     return record->rclass;
 }
 
-uint32_t dns_record_get_ttl(const dns_record_t *record)
+uint32_t dns_answer_get_ttl(const dns_answer_t *record)
 {
     if (NULL == record) {
         return 0;
@@ -162,7 +162,7 @@ uint32_t dns_record_get_ttl(const dns_record_t *record)
     return record->rttl;
 }
 
-uint16_t dns_record_get_length(const dns_record_t *record)
+uint16_t dns_answer_get_length(const dns_answer_t *record)
 {
     if (NULL == record) {
         return 0;
@@ -171,7 +171,7 @@ uint16_t dns_record_get_length(const dns_record_t *record)
     return record->rlength;
 }
 
-uint8_t *dns_record_get_data(const dns_record_t *record)
+uint8_t *dns_answer_get_data(const dns_answer_t *record)
 {
     if (NULL == record) {
         return NULL;
@@ -180,7 +180,7 @@ uint8_t *dns_record_get_data(const dns_record_t *record)
     return record->rdata;
 }
 
-uint32_t dns_record_length(const dns_record_t *record)
+uint32_t dns_answer_length(const dns_answer_t *record)
 {
     if (NULL == record) {
         return 0;
@@ -193,10 +193,10 @@ uint32_t dns_record_length(const dns_record_t *record)
         name_len = strlen(record->rname) + 1;
     }
 
-    return sizeof(dns_record_t) + name_len + data_len - ptr_len;
+    return sizeof(dns_answer_t) + name_len + data_len - ptr_len;
 }
 
-bool dns_record_equal(const dns_record_t *record1, const dns_record_t *record2)
+bool dns_answer_equal(const dns_answer_t *record1, const dns_answer_t *record2)
 {
     if (NULL == record1 || NULL == record2) {
         return false;
@@ -206,7 +206,7 @@ bool dns_record_equal(const dns_record_t *record1, const dns_record_t *record2)
     || record1->rclass != record2->rclass
     || record1->rttl != record2->rttl
     || record1->rlength != record2->rlength
-    || dns_record_length(record1) != dns_record_length(record2)
+    || dns_answer_length(record1) != dns_answer_length(record2)
     || memcmp(record1->rdata, record2->rdata, record1->rlength) != 0
     || strcmp(record1->rname, record2->rname) != 0) {
         return false;
@@ -215,14 +215,14 @@ bool dns_record_equal(const dns_record_t *record1, const dns_record_t *record2)
     return true;
 }
 
-int dns_record_serialize(const dns_record_t *record, uint8_t *buf, size_t buf_size)
+int dns_answer_serialize(const dns_answer_t *record, uint8_t *buf, size_t buf_size)
 {
     if (NULL == record || NULL == buf) {
         return 0;
     }
 
     int name_len = strlen(record->rname) + 1;
-    int record_len = dns_record_length(record);
+    int record_len = dns_answer_length(record);
     if (buf_size < record_len) {
         return 0;
     }
@@ -245,14 +245,14 @@ int dns_record_serialize(const dns_record_t *record, uint8_t *buf, size_t buf_si
     return record_len;
 }
 
-int dns_record_deserialize(dns_record_t *record, const uint8_t *data, size_t data_len)
+int dns_answer_deserialize(dns_answer_t *record, const uint8_t *data, size_t data_len)
 {
     if (NULL == record || NULL == data) {
         return 0;
     }
 
-    dns_record_clear(record);
-    int record_len = dns_record_length(record);
+    dns_answer_clear(record);
+    int record_len = dns_answer_length(record);
     if (data_len < record_len) {
         return 0;
     }
@@ -277,7 +277,7 @@ int dns_record_deserialize(dns_record_t *record, const uint8_t *data, size_t dat
     record->rlength =  *(ptr++) << 8 ;
     record->rlength |= *(ptr++)      ;
     if (record->rlength > 0) {
-        if (dns_record_set_data(record, ptr, record->rlength) == false) {
+        if (dns_answer_set_data(record, ptr, record->rlength) == false) {
             return 0;
         }
     }
@@ -285,14 +285,13 @@ int dns_record_deserialize(dns_record_t *record, const uint8_t *data, size_t dat
     return ptr - data;
 }
 
-const char *dns_record_to_string(dns_record_t *record, char *buf, uint32_t buf_size)
+const char *dns_answer_to_string(dns_answer_t *record, char *buf, uint32_t buf_size)
 {
     if (NULL == record) {
         return NULL;
     }
 
-    char name[256] = {0};
-    int record_len = dns_record_length(record);
+    int record_len = dns_answer_length(record);
     int hexstr_len = (record_len * 2 + 1);
     char *hexstr_buf = (char*)malloc(hexstr_len);
     if (NULL == hexstr_buf) {
@@ -305,33 +304,59 @@ const char *dns_record_to_string(dns_record_t *record, char *buf, uint32_t buf_s
         return NULL;
     }
 
-    int serialize_len = dns_record_serialize(record, serialize_buf, record_len);
+    int serialize_len = dns_answer_serialize(record, serialize_buf, record_len);
     if (serialize_len != record_len) {
         free(hexstr_buf);
         free(serialize_buf);
         return NULL;
     }
     const char *hexstr = dns_hexstring(serialize_buf, record_len, hexstr_buf, hexstr_len);
-    free(serialize_buf);
+    if (NULL == hexstr) {
+        free(hexstr_buf);
+        free(serialize_buf);
+        return NULL;
+    }
+
+    size_t data_hex_size = 256;
+    uint8_t *data_hex = (uint8_t*)malloc(data_hex_size);
+    if (NULL == data_hex) {
+        free(hexstr_buf);
+        free(serialize_buf);
+        return NULL;
+    }
+
+    size_t name_size = 256;
+    char *name = (char*)malloc(name_size);
+    if (NULL == name) {
+        free(hexstr_buf);
+        free(serialize_buf);
+        free(data_hex);
+        return NULL;
+    }
 
     snprintf(buf, buf_size, 
             "DNS Record(%d): [%s]\n"
             "  |-Name  : %s\n" 
-            "  |-Type  : %s\n"
-            "  |-Class : %s\n"
+            "  |-Type  : %u - %s\n"
+            "  |-Class : %u - %s\n"
             "  |-TTL   : %u\n"
             "  |-Length: %u\n" 
-            "  |-Data  : %s\n",
+            "  |-Data  : [%s]\n",
             record_len,
             hexstr_buf,
-            dns_name_encoded_string(record->rname, name, sizeof(name)),
-            dns_type_name         (record->rtype ),
-            dns_class_name        (record->rclass),
-            dns_record_get_ttl    (record        ),
-            dns_record_get_length (record        ),
-            dns_record_get_data   (record        ));
+            dns_name_encoded_string(record->rname, name, name_size),
+            record->rtype,
+            dns_type_name(record->rtype ),
+            record->rclass,
+            dns_class_name(record->rclass),
+            dns_answer_get_ttl(record),
+            dns_answer_get_length (record),
+            dns_hexstring(record->rdata, record->rlength, data_hex, data_hex_size));
 
+    free(serialize_buf);
     free(hexstr_buf);
+    free(data_hex);
+    free(name);
     return buf;
 }
 
@@ -341,50 +366,50 @@ const char *dns_record_to_string(dns_record_t *record, char *buf, uint32_t buf_s
 
 int main()
 {
-    dns_record_t record;
+    dns_answer_t record;
 
-    if (dns_record_init(&record) == false) {
-        printf("dns_record_init failed\n");
+    if (dns_answer_init(&record) == false) {
+        printf("dns_answer_init failed\n");
         return 1;
     }
 
-    if (dns_record_set_name(&record, "www.baidu.com") == false) {
-        printf("dns_record_set_name failed\n");
+    if (dns_answer_set_name(&record, "www.baidu.com") == false) {
+        printf("dns_answer_set_name failed\n");
         return 1;
     }
 
-    if (dns_record_set_type(&record, DNS_TYPE_A) == false) {
-        printf("dns_record_set_type failed\n");
+    if (dns_answer_set_type(&record, DNS_TYPE_A) == false) {
+        printf("dns_answer_set_type failed\n");
         return 1;
     }
 
-    if (dns_record_set_class(&record, DNS_CLASS_IN) == false) {
-        printf("dns_record_set_class failed\n");
+    if (dns_answer_set_class(&record, DNS_CLASS_IN) == false) {
+        printf("dns_answer_set_class failed\n");
         return 1;
     }
 
-    if (dns_record_set_ttl(&record, 300) == false) {
-        printf("dns_record_set_ttl failed\n");
+    if (dns_answer_set_ttl(&record, 300) == false) {
+        printf("dns_answer_set_ttl failed\n");
         return 1;
     }
 
-    if (dns_record_set_data(&record, (uint8_t *)"www.baidu.com", 14) == false) {
-        printf("dns_record_set_data failed\n");
+    if (dns_answer_set_data(&record, (uint8_t *)"www.baidu.com", 14) == false) {
+        printf("dns_answer_set_data failed\n");
         return 1;
     }
 
     char buf[1024];
-    const char *str = dns_record_to_string(&record, buf, sizeof(buf));
+    const char *str = dns_answer_to_string(&record, buf, sizeof(buf));
     printf("record:%s\n", str ? str:"NULL");
     uint8_t data[1024];
-    int len = dns_record_serialize(&record, data, sizeof(data));
-    dns_record_t record2;
-    dns_record_init(&record2);
-    len = dns_record_deserialize(&record2, (uint8_t *)data, len);
-    str = dns_record_to_string(&record2, buf, sizeof(buf));
+    int len = dns_answer_serialize(&record, data, sizeof(data));
+    dns_answer_t record2;
+    dns_answer_init(&record2);
+    len = dns_answer_deserialize(&record2, (uint8_t *)data, len);
+    str = dns_answer_to_string(&record2, buf, sizeof(buf));
     printf("record2:%s\n", str ? str:"NULL");
 
-    printf("%s\n", dns_record_equal(&record, &record2) ? "record1 == record2" : "record1 != record2");
+    printf("%s\n", dns_answer_equal(&record, &record2) ? "record1 == record2" : "record1 != record2");
     return 0;
 }
 #endif // DNS_RECORD_TEST

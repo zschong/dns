@@ -1,7 +1,7 @@
 #pragma once
 #include "dns_header.h"
-#include "dns_query.h"
-#include "dns_record.h"
+#include "dns_question.h"
+#include "dns_answer.h"
 #include "dns_type.h"
 
 #ifdef __cplusplus
@@ -16,8 +16,8 @@ extern "C" {
  */
 typedef struct dns_message {
     dns_header_t  header;
-    dns_query_t  *queries;
-    dns_record_t *records;
+    dns_question_t  *queries;
+    dns_answer_t *records;
 } dns_message_t;
 
 /**
@@ -45,7 +45,7 @@ bool dns_message_clear(dns_message_t *message);
  * @return true 成功
  * @return false 失败
  */
-bool dns_message_add_query(dns_message_t *message, dns_query_t *query);
+bool dns_message_add_query(dns_message_t *message, dns_question_t *query);
 ;
 
 /**
@@ -55,7 +55,7 @@ bool dns_message_add_query(dns_message_t *message, dns_query_t *query);
  * @return true 成功
  * @return false 失败
  */
-bool dns_message_add_response(dns_message_t *message, dns_record_t *record);
+bool dns_message_add_response(dns_message_t *message, dns_answer_t *record);
 ;
 
 /**

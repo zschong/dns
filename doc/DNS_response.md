@@ -30,7 +30,7 @@ typedef struct {
     uint32_t ttl     ; // 生存时间，表示记录的缓存时间
     uint16_t rdlength; // 资源数据长度
     uint8_t  *rdata  ; // 资源数据，如IP地址
-} dns_record_t;
+} dns_answer_t;
 
 // 位域结构体用于表示flags字段
 typedef struct {
@@ -75,7 +75,7 @@ int main() {
     // 创建查询部分（省略实现，与之前相同）
 
     // 创建回答部分
-    dns_record_t answer;
+    dns_answer_t answer;
 
     // 假设我们已经有了压缩的域名指针，通常是指向请求中的域名
     // 这里为了简化，我们直接使用一个示例压缩格式

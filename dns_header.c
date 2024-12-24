@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "dns_binstring.h"
@@ -198,16 +199,33 @@ const char *dns_header_to_string(const dns_header_t *header, char *buf, uint32_t
         return NULL;
     }
 
-    uint8_t serialize_buf[sizeof(dns_header_t) * 2 + 1];
-    int serialize_len = dns_header_serialize(header, serialize_buf, sizeof(serialize_buf));
+    size_t serialize_buf_size = sizeof(dns_header_t) * 2 + 1;
+    uint8_t *serialize_buf = (uint8_t*)malloc(serialize_buf_size);
+    if (NULL == serialize_buf) {
+        return NULL;
+    }
+
+    int serialize_len = dns_header_serialize(header, serialize_buf, serialize_buf_size);
     if (serialize_len <= 0) {
         return NULL;
     }
 
-    char flags_buf[512];
-    char hexbuf[256];
+    size_t flags_buf_size = 512;
+    char *flags_buf = (char*)malloc(flags_buf_size);
+    if (NULL == flags_buf) {
+        free(serialize_buf);
+        return NULL;
+    }
 
-    dns_flags_to_string(header->flags, flags_buf, sizeof(flags_buf));
+    size_t hexbuf_size = 256;
+    char *hexbuf = (char*)malloc(hexbuf_size);
+    if (NULL == hexbuf) {
+        free(serialize_buf);
+        free(flags_buf);
+        return NULL;
+    }
+
+    dns_flags_to_string(header->flags, flags_buf, flags_buf_size);
     snprintf(buf,
              buf_size,
              "DNS Header(%d):[%s]\n"
@@ -219,13 +237,17 @@ const char *dns_header_to_string(const dns_header_t *header, char *buf, uint32_t
              "  Flags           : \n"
              "%s",
              serialize_len,
-             dns_hexstring((uint8_t *)serialize_buf, serialize_len, hexbuf, sizeof(hexbuf)),
+             dns_hexstring((uint8_t *)serialize_buf, serialize_len, hexbuf, hexbuf_size),
              header->id,
              header->questions_count,
              header->answers_count,
              header->authorities_count,
              header->additional_count,
              flags_buf);
+
+    free(serialize_buf);
+    free(flags_buf);
+    free(hexbuf);
 
     return buf;
 }

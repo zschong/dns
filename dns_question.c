@@ -1,12 +1,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include "dns_class.h"
-#include "dns_query.h"
+#include "dns_question.h"
 #include "dns_type.h"
 #include "dns_name.h"
 #include "dns_hexstring.h"
 
-bool dns_query_init(dns_query_t *query)
+bool dns_question_init(dns_question_t *query)
 {
     if (NULL == query) {
         return false;
@@ -18,7 +18,7 @@ bool dns_query_init(dns_query_t *query)
     return true;
 }
 
-bool dns_query_clear(dns_query_t *query)
+bool dns_question_clear(dns_question_t *query)
 {
     if (NULL == query) {
         return false;
@@ -34,7 +34,7 @@ bool dns_query_clear(dns_query_t *query)
     return true;
 }
 
-bool dns_query_set_qname(dns_query_t *query, const char *domain_name)
+bool dns_question_set_qname(dns_question_t *query, const char *domain_name)
 {
     if (NULL == query || NULL == domain_name) {
         return false;
@@ -54,7 +54,7 @@ bool dns_query_set_qname(dns_query_t *query, const char *domain_name)
     return !!query->qname;
 }
 
-bool dns_query_set_qtype(dns_query_t *query, uint16_t qtype)
+bool dns_question_set_qtype(dns_question_t *query, uint16_t qtype)
 {
     if (NULL == query) {
         return false;
@@ -63,7 +63,7 @@ bool dns_query_set_qtype(dns_query_t *query, uint16_t qtype)
     return true;
 }
 
-bool dns_query_set_qclass(dns_query_t *query, uint16_t qclass)
+bool dns_question_set_qclass(dns_question_t *query, uint16_t qclass)
 {
     if (NULL == query) {
         return false;
@@ -72,7 +72,7 @@ bool dns_query_set_qclass(dns_query_t *query, uint16_t qclass)
     return true;
 }
 
-const char *dns_query_get_qname(const dns_query_t *query)
+const char *dns_question_get_qname(const dns_question_t *query)
 {
     if (NULL == query) {
         return NULL;
@@ -80,7 +80,7 @@ const char *dns_query_get_qname(const dns_query_t *query)
     return query->qname;
 }
 
-uint16_t dns_query_get_qtype(const dns_query_t *query)
+uint16_t dns_question_get_qtype(const dns_question_t *query)
 {
     if (NULL == query) {
         return 0;
@@ -88,7 +88,7 @@ uint16_t dns_query_get_qtype(const dns_query_t *query)
     return (query->qtype);
 }
 
-uint16_t dns_query_get_qclass(const dns_query_t *query)
+uint16_t dns_question_get_qclass(const dns_question_t *query)
 {
     if (NULL == query) {
         return 0;
@@ -96,16 +96,16 @@ uint16_t dns_query_get_qclass(const dns_query_t *query)
     return (query->qclass);
 }
 
-uint32_t dns_query_length(const dns_query_t *query)
+uint32_t dns_question_length(const dns_question_t *query)
 {
     if (NULL == query || NULL == query->qname) {
         return 0;
     }
 
-    return strlen(query->qname) + sizeof(dns_query_t) - sizeof(void*);
+    return strlen(query->qname) + sizeof(dns_question_t) - sizeof(void*);
 }
 
-bool dns_query_equal(const dns_query_t *query1, const dns_query_t *query2)
+bool dns_question_equal(const dns_question_t *query1, const dns_question_t *query2)
 {
     if (NULL == query1 || NULL == query2) {
         printf("query1 or query2 is NULL\n");
@@ -131,21 +131,21 @@ bool dns_query_equal(const dns_query_t *query1, const dns_query_t *query2)
         return true;
     }
 
-    if (dns_query_length(query1) != dns_query_length(query2)) {
-        printf("dns_query_length(query1) != dns_query_length(query2)\n");
+    if (dns_question_length(query1) != dns_question_length(query2)) {
+        printf("dns_question_length(query1) != dns_question_length(query2)\n");
         return false;
     }
 
     return strcmp(query1->qname, query2->qname) == 0;
 }
 
-int dns_query_serialize(const dns_query_t *query, uint8_t *buf, uint16_t buf_size)
+int dns_question_serialize(const dns_question_t *query, uint8_t *buf, uint16_t buf_size)
 {
     if (NULL == query || NULL == query->qname || NULL == buf) {
         return 0;
     }
 
-    int query_len = dns_query_length(query);
+    int query_len = dns_question_length(query);
     if (buf_size < query_len) {
         return 0;
     }
@@ -163,16 +163,16 @@ int dns_query_serialize(const dns_query_t *query, uint8_t *buf, uint16_t buf_siz
 }
 
 
-int dns_query_deserialize(dns_query_t *query, const uint8_t *data, uint16_t data_len)
+int dns_question_deserialize(dns_question_t *query, const uint8_t *data, uint16_t data_len)
 {
     if (NULL == query || NULL == data) {
         return 0;
     }
 
-    dns_query_clear(query);
+    dns_question_clear(query);
 
     int name_len = strlen((char*)data);
-    if (data_len < (name_len + dns_query_length(query))) {
+    if (data_len < (name_len + dns_question_length(query))) {
         return 0;
     }
 
@@ -191,13 +191,13 @@ int dns_query_deserialize(dns_query_t *query, const uint8_t *data, uint16_t data
     return true;
 }
 
-const char *dns_query_to_string(const dns_query_t *query, char *buf, uint32_t buf_size)
+const char *dns_question_to_string(const dns_question_t *query, char *buf, uint32_t buf_size)
 {
     if (NULL == query || NULL == query->qname || NULL == buf) {
         return NULL;
     }
 
-    int query_len = dns_query_length(query);
+    int query_len = dns_question_length(query);
     if (query_len < 1 || buf_size < query_len * 3) {
         return NULL;
     }
@@ -207,7 +207,7 @@ const char *dns_query_to_string(const dns_query_t *query, char *buf, uint32_t bu
         return NULL;
     }
 
-    int serialize_len = dns_query_serialize(query, serialize_buf, query_len);
+    int serialize_len = dns_question_serialize(query, serialize_buf, query_len);
     if (serialize_len < 1) {
         free(serialize_buf);
         return NULL;
@@ -230,7 +230,7 @@ const char *dns_query_to_string(const dns_query_t *query, char *buf, uint32_t bu
     char name_encoded[256] = {0};
     snprintf(buf,
              buf_size,
-             "dns_query(%d): [%s]\n"
+             "dns_question(%d): [%s]\n"
              "  |-encoded: %s\n"
              "  |-qname  : %s\n"
              "  |-qtype  : %s\n"
@@ -251,25 +251,25 @@ const char *dns_query_to_string(const dns_query_t *query, char *buf, uint32_t bu
 #ifdef DNS_QUERY_TEST
 int main(int argc, char **argv)
 {
-    dns_query_t query;
+    dns_question_t query;
     char        buf[1024];
 
     memset(&query, 0, sizeof(query));
 
-    dns_query_set_qname(&query, "a.looooooooooong.example.com");
-    dns_query_set_qtype(&query, DNS_TYPE_A);
-    dns_query_set_qclass(&query, DNS_CLASS_IN);
+    dns_question_set_qname(&query, "a.looooooooooong.example.com");
+    dns_question_set_qtype(&query, DNS_TYPE_A);
+    dns_question_set_qclass(&query, DNS_CLASS_IN);
 
-    dns_query_to_string(&query, buf, sizeof(buf));
+    dns_question_to_string(&query, buf, sizeof(buf));
     printf("%s\n", buf);
     uint8_t serialize_buf[1024];
-    int     serialize_len = dns_query_serialize(&query, serialize_buf, sizeof(serialize_buf));
-    dns_query_t query2;
-    dns_query_init(&query2);
-    dns_query_deserialize(&query2, serialize_buf, serialize_len);
-    dns_query_to_string(&query2, buf, sizeof(buf));
+    int     serialize_len = dns_question_serialize(&query, serialize_buf, sizeof(serialize_buf));
+    dns_question_t query2;
+    dns_question_init(&query2);
+    dns_question_deserialize(&query2, serialize_buf, serialize_len);
+    dns_question_to_string(&query2, buf, sizeof(buf));
     printf("%s\n", buf);
-    printf("%s\n", dns_query_equal(&query, &query2) ? "query == qeury2" : "query != query2");
+    printf("%s\n", dns_question_equal(&query, &query2) ? "query == qeury2" : "query != query2");
 
     return 0;
 }

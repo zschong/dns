@@ -1,4 +1,4 @@
-# dns_query_qname
+# dns_question_qname
 ```c
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,33 +9,33 @@ typedef struct {
     unsigned char *qname; // 查询名称
     unsigned short qtype; // 查询类型
     unsigned short qclass; // 查询类
-} dns_query_t;
+} dns_question_t;
 
 // 函数原型声明
-void  dns_query_set_qname(dns_query_t *query, const char *domain_name);
-char* dns_query_get_qname(const dns_query_t *query);
-void  dns_query_free_qname(unsigned char *qname);
+void  dns_question_set_qname(dns_question_t *query, const char *domain_name);
+char* dns_question_get_qname(const dns_question_t *query);
+void  dns_question_free_qname(unsigned char *qname);
 
 // 主函数
 int main() {
-    dns_query_t query;
+    dns_question_t query;
     const char *domain_name = "www.example.com";
     
-    dns_query_set_qname(&query, domain_name);
+    dns_question_set_qname(&query, domain_name);
     
     // 获取并打印转换后的QNAME
-    char *decoded_domain_name = dns_query_get_qname(&query);
+    char *decoded_domain_name = dns_question_get_qname(&query);
     printf("Decoded domain name: %s\n", decoded_domain_name);
     
     // 释放分配的内存
-    dns_query_free_qname(query.qname);
+    dns_question_free_qname(query.qname);
     free(decoded_domain_name);
     
     return 0;
 }
 
-// dns_query_set_qname函数实现
-void dns_query_set_qname(dns_query_t *query, const char *domain_name) {
+// dns_question_set_qname函数实现
+void dns_question_set_qname(dns_question_t *query, const char *domain_name) {
     if (query == NULL || domain_name == NULL) {
         return;
     }
@@ -71,8 +71,8 @@ void dns_query_set_qname(dns_query_t *query, const char *domain_name) {
     query->qname[pos] = 0; // 设置结束标记
 }
 
-// dns_query_get_qname函数实现
-char* dns_query_get_qname(const dns_query_t *query) {
+// dns_question_get_qname函数实现
+char* dns_question_get_qname(const dns_question_t *query) {
     if (query == NULL || query->qname == NULL) {
         return NULL;
     }
@@ -105,8 +105,8 @@ char* dns_query_get_qname(const dns_query_t *query) {
     return domain_name;
 }
 
-// dns_query_free_qname函数实现
-void dns_query_free_qname(unsigned char *qname) {
+// dns_question_free_qname函数实现
+void dns_question_free_qname(unsigned char *qname) {
     if (qname != NULL) {
         free(qname);
     }

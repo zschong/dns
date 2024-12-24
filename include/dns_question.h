@@ -11,7 +11,7 @@ typedef struct {
     char *qname;   // 查询名称
     uint16_t qtype;   // 查询类型
     uint16_t qclass;  // 查询类
-} dns_query_t;
+} dns_question_t;
 ;
 
 /**
@@ -19,7 +19,7 @@ typedef struct {
  * @param[out] query DNS查询问题结构
  * @return bool 初始化成功返回true，否则返回false
  */
-bool dns_query_init(dns_query_t *query);
+bool dns_question_init(dns_question_t *query);
 ;
 
 /**
@@ -27,7 +27,7 @@ bool dns_query_init(dns_query_t *query);
  * @param[out] query DNS查询问题结构
  * @return bool 释放成功返回true，否则返回false
  */
-bool dns_query_clear(dns_query_t *query);
+bool dns_question_clear(dns_question_t *query);
 ;
 
 /**
@@ -36,7 +36,7 @@ bool dns_query_clear(dns_query_t *query);
  * @param[in] domain_name 查询域名
  * @return void
  */
-bool dns_query_set_qname(dns_query_t *query, const char *domain_name);
+bool dns_question_set_qname(dns_question_t *query, const char *domain_name);
 ;
 
 /**
@@ -45,7 +45,7 @@ bool dns_query_set_qname(dns_query_t *query, const char *domain_name);
  * @param[in] qtype 查询类型
  * @return void
  * */
-bool dns_query_set_qtype(dns_query_t *query, uint16_t qtype);
+bool dns_question_set_qtype(dns_question_t *query, uint16_t qtype);
 ;
 
 /**
@@ -54,7 +54,7 @@ bool dns_query_set_qtype(dns_query_t *query, uint16_t qtype);
  * @param[in] qclass 查询类
  * @return void
  * */
-bool dns_query_set_qclass(dns_query_t *query, uint16_t qclass);
+bool dns_question_set_qclass(dns_question_t *query, uint16_t qclass);
 ;
 
 /**
@@ -62,7 +62,7 @@ bool dns_query_set_qclass(dns_query_t *query, uint16_t qclass);
  * @param[in] query DNS查询问题结构
  * @return const uint8_t* 查询名称
  * */
-const char *dns_query_get_qname(const dns_query_t *query);
+const char *dns_question_get_qname(const dns_question_t *query);
 ;
 
 /**
@@ -70,7 +70,7 @@ const char *dns_query_get_qname(const dns_query_t *query);
  * @param[in] query DNS查询问题结构
  * @return uint16_t 查询类型
  * */
-uint16_t dns_query_get_qtype(const dns_query_t *query);
+uint16_t dns_question_get_qtype(const dns_question_t *query);
 ;
 
 /**
@@ -78,7 +78,7 @@ uint16_t dns_query_get_qtype(const dns_query_t *query);
  * @param[in] query DNS查询问题结构
  * @return uint16_t 查询类
  * */
-uint16_t dns_query_get_qclass(const dns_query_t *dns_query_t);
+uint16_t dns_question_get_qclass(const dns_question_t *dns_question_t);
 ;
 
 /**
@@ -86,7 +86,7 @@ uint16_t dns_query_get_qclass(const dns_query_t *dns_query_t);
  * @param[in] query DNS查询问题结构
  * @return uint32_t 问题的长度
  */
-uint32_t dns_query_length(const dns_query_t *query);
+uint32_t dns_question_length(const dns_question_t *query);
 ;
 
 /**
@@ -95,7 +95,7 @@ uint32_t dns_query_length(const dns_query_t *query);
  * @param[in] query2 DNS查询问题结构
  * @return bool 相等返回true，否则返回false
  * */
-bool dns_query_equal(const dns_query_t *query1, const dns_query_t *query2);
+bool dns_question_equal(const dns_question_t *query1, const dns_question_t *query2);
 ;
 
 /**
@@ -105,7 +105,7 @@ bool dns_query_equal(const dns_query_t *query1, const dns_query_t *query2);
  * @param[in] buf_size 输出缓冲区大小
  * @return int 序列化填充的字节数，否则返回-1
  */
-int dns_query_serialize(const dns_query_t *query, uint8_t *buf, uint16_t buf_size);
+int dns_question_serialize(const dns_question_t *query, uint8_t *buf, uint16_t buf_size);
 ;
 
 /**
@@ -115,7 +115,7 @@ int dns_query_serialize(const dns_query_t *query, uint8_t *buf, uint16_t buf_siz
  * @param[in] src_len 输入缓冲区大小
  * @return int 反序列消耗的字节数
  */
-int dns_query_deserialize(dns_query_t *query, const uint8_t *src, uint16_t src_len);
+int dns_question_deserialize(dns_question_t *query, const uint8_t *src, uint16_t src_len);
 ;
 
 /**
@@ -125,5 +125,5 @@ int dns_query_deserialize(dns_query_t *query, const uint8_t *src, uint16_t src_l
  * @param[in] buf_size 输出缓冲区大小
  * @return void
  * */
-const char *dns_query_to_string(const dns_query_t *query, char *buf, uint32_t buf_size);
+const char *dns_question_to_string(const dns_question_t *query, char *buf, uint32_t buf_size);
 ;
