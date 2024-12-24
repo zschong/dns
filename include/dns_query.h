@@ -8,7 +8,7 @@
 
 // DNS查询问题结构
 typedef struct {
-    uint8_t *qname;   // 查询名称
+    char *qname;   // 查询名称
     uint16_t qtype;   // 查询类型
     uint16_t qclass;  // 查询类
 } dns_query_t;
@@ -62,7 +62,7 @@ bool dns_query_set_qclass(dns_query_t *query, uint16_t qclass);
  * @param[in] query DNS查询问题结构
  * @return const uint8_t* 查询名称
  * */
-const uint8_t *dns_query_get_qname(const dns_query_t *query);
+const char *dns_query_get_qname(const dns_query_t *query);
 ;
 
 /**

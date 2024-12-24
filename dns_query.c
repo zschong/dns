@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include "dns_class.h"
 #include "dns_query.h"
 #include "dns_type.h"
@@ -47,7 +48,6 @@ bool dns_query_set_qname(dns_query_t *query, const char *domain_name)
 
     if (query->qname) {
         free(query->qname);
-        query->qname = NULL;
     }
 
     query->qname = strdup(buf);
@@ -72,7 +72,7 @@ bool dns_query_set_qclass(dns_query_t *query, uint16_t qclass)
     return true;
 }
 
-const uint8_t *dns_query_get_qname(const dns_query_t *query)
+const char *dns_query_get_qname(const dns_query_t *query)
 {
     if (NULL == query) {
         return NULL;
@@ -171,12 +171,12 @@ int dns_query_deserialize(dns_query_t *query, const uint8_t *data, uint16_t data
 
     dns_query_clear(query);
 
-    int name_len = strlen(data);
+    int name_len = strlen((char*)data);
     if (data_len < (name_len + dns_query_length(query))) {
         return 0;
     }
 
-    query->qname = strdup(data);
+    query->qname = strdup((char*)data);
     if (NULL == query->qname) {
         return 0;
     }
@@ -244,6 +244,7 @@ const char *dns_query_to_string(const dns_query_t *query, char *buf, uint32_t bu
 
     free(serialize_buf);
     free(hexstr_buf);
+    
     return buf;
 }
 
