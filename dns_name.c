@@ -57,8 +57,10 @@ const char *dns_name_decode(const char *data, char *buf, size_t buf_size)
         dst += *src;
         *dst++ = '.';
     }
-
-    *dst = 0;
+    
+    if (dst > buf) {
+        *(dst-1) = 0;
+    }
 
     return buf;
 }

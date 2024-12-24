@@ -203,14 +203,14 @@ const char *dns_flags_to_string(uint16_t flags, char *buf, uint32_t buf_size)
 
     snprintf(buf,
              buf_size,
-             "dns_flags: 0x%04X=[%s] {QR(1)|opcode(4)|AA(1)|TC(1)|RD(1)|RA(1)|zero(3)|rcode(4)}\n"
-             "  %s\n" // QR
-             "  %s\n" // OPCODE
-             "  %s\n" // AA
-             "  %s\n" // TC
-             "  %s\n" // RD
-             "  %s\n" // RA
-             "  %s\n", // RCODE
+             "DNS Flags: 0x%04X=[%s] {QR(1)|opcode(4)|AA(1)|TC(1)|RD(1)|RA(1)|zero(3)|rcode(4)}\n"
+             "  |-%s\n" // QR
+             "  |-%s\n" // OPCODE
+             "  |-%s\n" // AA
+             "  |-%s\n" // TC
+             "  |-%s\n" // RD
+             "  |-%s\n" // RA
+             "  |-%s\n", // RCODE
              flags,
              dns_value_binstring((uint8_t*)&flags, sizeof(flags), binstr, sizeof(binstr)),
              dns_flags_stringify_qr    (flags, qr_buf    , sizeof(qr_buf    )),

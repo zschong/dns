@@ -28,7 +28,7 @@ DNS 报文分为 请求 和 应答 两种，结构是类似的，大致分为五
 - 授权信息节（ authority ），保存授权信息；
 - 附加信息节（ additional ），保存附加信息；
 
->也有不少文献将 DNS 请求称为 DNS 查询（ query ），两者是一个意思。
+>也有不少文献将 DNS 请求称为 DNS 查询（ question ），两者是一个意思。
 {: .prompt-tip }
 
 ![](https://i.ibb.co/sRBWGH6/bb5146dfd61519aebc02722d4e62acaa1aba94e0.png)
@@ -39,8 +39,8 @@ DNS 报文分为 请求 和 应答 两种，结构是类似的，大致分为五
 - 标志（ flags ），一些标志位，共 16 位；
 - 问题记录数（ question count ），一个 16 位整数，表示问题节中的记录个数；
 - 答案记录数（ answer count ），一个 16 位整数，表示答案节中的记录个数；
-- 授权信息记录数（ authority record count ），一个 16 位整数，表示授权信息节中的记录个数；
-- 附加信息记录数（ additional record count ），一个 16 位整数，表示附加信息节中的记录个数；
+- 授权信息记录数（ authority answer count ），一个 16 位整数，表示授权信息节中的记录个数；
+- 附加信息记录数（ additional answer count ），一个 16 位整数，表示附加信息节中的记录个数；
 
 最后，我们来解释一下标志字段中的各个标志位：
 

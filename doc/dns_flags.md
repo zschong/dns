@@ -31,7 +31,7 @@ char* dns_flags_to_string(dns_flags_t flags, char* buffer, size_t buffer_size) {
 
     // 格式化每个字段的状态并追加到缓冲区
     sprintf(buffer + strlen(buffer), "QR (Query/Response)      : %u (%s)\n", flags.qr    , flags.qr ? "Response" : "Query"                            );
-    sprintf(buffer + strlen(buffer), "OPCODE                   : %u (%s)\n", flags.opcode, flags.opcode == 0 ? "Standard query" : "Non-standard query");
+    sprintf(buffer + strlen(buffer), "OPCODE                   : %u (%s)\n", flags.opcode, flags.opcode == 0 ? "Standard question" : "Non-standard question");
     sprintf(buffer + strlen(buffer), "AA (Authoritative Answer): %u (%s)\n", flags.aa    , flags.aa ? "Yes" : "No"                                    );
     sprintf(buffer + strlen(buffer), "TC (Truncated)           : %u (%s)\n", flags.tc    , flags.tc ? "Yes" : "No"                                    );
     sprintf(buffer + strlen(buffer), "RD (Recursion Desired)   : %u (%s)\n", flags.rd    , flags.rd ? "Yes" : "No"                                    );

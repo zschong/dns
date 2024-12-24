@@ -58,12 +58,12 @@ int main() {
     header.additional_rrs = htons(0x0000); // 没有附加资源记录
 
     // 创建DNS查询问题
-    DNS_Query query;
+    DNS_Query question;
     // 域名转换为DNS格式，例如www.example.com转换为3www7example3com0
     uint8_t qname[] = {3, 'w', 'w', 'w', 7, 'e', 'x', 'a', 'm', 'p', 'l', 'e', 3, 'c', 'o', 'm', 0};
-    query.qname  = qname        ;
-    query.qtype  = htons(0x0001); // 查询类型为A记录
-    query.qclass = htons(0x0001); // 查询类为IN类
+    question.qname  = qname        ;
+    question.qtype  = htons(0x0001); // 查询类型为A记录
+    question.qclass = htons(0x0001); // 查询类为IN类
 
     // 打印DNS请求报文（省略实现，与之前相同）
 

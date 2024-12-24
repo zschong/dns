@@ -6,37 +6,37 @@
 #include "dns_name.h"
 #include "dns_hexstring.h"
 
-bool dns_question_init(dns_question_t *query)
+bool dns_question_init(dns_question_t *question)
 {
-    if (NULL == query) {
+    if (NULL == question) {
         return false;
     }
 
-    query->qname = NULL;
-    query->qtype = 0;
-    query->qclass = 0;
+    question->qname = NULL;
+    question->qtype = 0;
+    question->qclass = 0;
     return true;
 }
 
-bool dns_question_clear(dns_question_t *query)
+bool dns_question_clear(dns_question_t *question)
 {
-    if (NULL == query) {
+    if (NULL == question) {
         return false;
     }
 
-    if (query->qname) {
-        free(query->qname);
-        query->qname = NULL;
+    if (question->qname) {
+        free(question->qname);
+        question->qname = NULL;
     }
 
-    query->qtype = 0;
-    query->qclass = 0;
+    question->qtype = 0;
+    question->qclass = 0;
     return true;
 }
 
-bool dns_question_set_qname(dns_question_t *query, const char *domain_name)
+bool dns_question_set_qname(dns_question_t *question, const char *domain_name)
 {
-    if (NULL == query || NULL == domain_name) {
+    if (NULL == question || NULL == domain_name) {
         return false;
     }
 
@@ -46,168 +46,169 @@ bool dns_question_set_qname(dns_question_t *query, const char *domain_name)
         return false;
     }
 
-    if (query->qname) {
-        free(query->qname);
+    if (question->qname) {
+        free(question->qname);
     }
 
-    query->qname = strdup(buf);
-    return !!query->qname;
+    question->qname = strdup(buf);
+    return !!question->qname;
 }
 
-bool dns_question_set_qtype(dns_question_t *query, uint16_t qtype)
+bool dns_question_set_qtype(dns_question_t *question, uint16_t qtype)
 {
-    if (NULL == query) {
+    if (NULL == question) {
         return false;
     }
-    query->qtype = (qtype);
+    question->qtype = (qtype);
     return true;
 }
 
-bool dns_question_set_qclass(dns_question_t *query, uint16_t qclass)
+bool dns_question_set_qclass(dns_question_t *question, uint16_t qclass)
 {
-    if (NULL == query) {
+    if (NULL == question) {
         return false;
     }
-    query->qclass = (qclass);
+    question->qclass = (qclass);
     return true;
 }
 
-const char *dns_question_get_qname(const dns_question_t *query)
+const char *dns_question_get_qname(const dns_question_t *question)
 {
-    if (NULL == query) {
+    if (NULL == question) {
         return NULL;
     }
-    return query->qname;
+    return question->qname;
 }
 
-uint16_t dns_question_get_qtype(const dns_question_t *query)
+uint16_t dns_question_get_qtype(const dns_question_t *question)
 {
-    if (NULL == query) {
+    if (NULL == question) {
         return 0;
     }
-    return (query->qtype);
+    return (question->qtype);
 }
 
-uint16_t dns_question_get_qclass(const dns_question_t *query)
+uint16_t dns_question_get_qclass(const dns_question_t *question)
 {
-    if (NULL == query) {
+    if (NULL == question) {
         return 0;
     }
-    return (query->qclass);
+    return (question->qclass);
 }
 
-uint32_t dns_question_length(const dns_question_t *query)
+uint32_t dns_question_length(const dns_question_t *question)
 {
-    if (NULL == query || NULL == query->qname) {
+    if (NULL == question || NULL == question->qname) {
         return 0;
     }
 
-    return strlen(query->qname) + sizeof(dns_question_t) - sizeof(void*);
+    return strlen(question->qname) + 1 + sizeof(question->qtype) + sizeof(question->qclass);
 }
 
-bool dns_question_equal(const dns_question_t *query1, const dns_question_t *query2)
+bool dns_question_equal(const dns_question_t *question1, const dns_question_t *question2)
 {
-    if (NULL == query1 || NULL == query2) {
-        printf("query1 or query2 is NULL\n");
+    if (NULL == question1 || NULL == question2) {
+        printf("question1 or question2 is NULL\n");
         return false;
     }
 
-    if (query1->qtype != query2->qtype) {
-        printf("query1->qtype(%d) != query2->qtype(%d)\n", query1->qtype, query2->qtype);
+    if (question1->qtype != question2->qtype) {
+        printf("question1->qtype(%d) != question2->qtype(%d)\n", question1->qtype, question2->qtype);
         return false;
     }
 
-    if (query1->qclass != query2->qclass) {
-        printf("query1->qclass(%d) != query2->qclass(%d)\n", query1->qclass, query2->qclass);
+    if (question1->qclass != question2->qclass) {
+        printf("question1->qclass(%d) != question2->qclass(%d)\n", question1->qclass, question2->qclass);
         return false;
     }
 
-    if (NULL == query1->qname || NULL == query2->qname) {
-        printf("query1->qname or query2->qname is NULL\n");
+    if (NULL == question1->qname || NULL == question2->qname) {
+        printf("question1->qname or question2->qname is NULL\n");
         return false;
     }
 
-    if (query1->qname == query2->qname) {
+    if (question1->qname == question2->qname) {
         return true;
     }
 
-    if (dns_question_length(query1) != dns_question_length(query2)) {
-        printf("dns_question_length(query1) != dns_question_length(query2)\n");
+    if (dns_question_length(question1) != dns_question_length(question2)) {
+        printf("dns_question_length(question1) != dns_question_length(question2)\n");
         return false;
     }
 
-    return strcmp(query1->qname, query2->qname) == 0;
+    return strcmp(question1->qname, question2->qname) == 0;
 }
 
-int dns_question_serialize(const dns_question_t *query, uint8_t *buf, uint16_t buf_size)
+int dns_question_serialize(const dns_question_t *question, uint8_t *buf, uint16_t buf_size)
 {
-    if (NULL == query || NULL == query->qname || NULL == buf) {
+    if (NULL == question || NULL == question->qname || NULL == buf) {
         return 0;
     }
 
-    int query_len = dns_question_length(query);
-    if (buf_size < query_len) {
+    int question_len = dns_question_length(question);
+    if (buf_size < question_len) {
         return 0;
     }
 
-    strcpy((char*)buf, query->qname);
+    strcpy((char*)buf, question->qname);
 
     uint8_t *ptr = (uint8_t*)buf;
-    ptr += strlen(query->qname);
-    *(ptr++) = (query->qtype  >> 8) & 0xFF;
-    *(ptr++) =  query->qtype        & 0xFF;
-    *(ptr++) = (query->qclass >> 8) & 0xFF;
-    *(ptr++) =  query->qclass       & 0xFF;
+    ptr += strlen(question->qname);
+    *(ptr++) = 0; // end of name
+    *(ptr++) = (question->qtype  >> 8) & 0xFF;
+    *(ptr++) =  question->qtype        & 0xFF;
+    *(ptr++) = (question->qclass >> 8) & 0xFF;
+    *(ptr++) =  question->qclass       & 0xFF;
 
     return ptr - buf;
 }
 
 
-int dns_question_deserialize(dns_question_t *query, const uint8_t *data, uint16_t data_len)
+int dns_question_deserialize(dns_question_t *question, const uint8_t *data, uint16_t data_len)
 {
-    if (NULL == query || NULL == data) {
+    if (NULL == question || NULL == data) {
         return 0;
     }
 
-    dns_question_clear(query);
+    dns_question_clear(question);
 
-    int name_len = strlen((char*)data);
-    if (data_len < (name_len + dns_question_length(query))) {
+    int name_len = strlen((char*)data) + 1;
+    if (data_len < (name_len + dns_question_length(question))) {
         return 0;
     }
 
-    query->qname = strdup((char*)data);
-    if (NULL == query->qname) {
+    question->qname = strdup((char*)data);
+    if (NULL == question->qname) {
         return 0;
     }
 
     uint8_t *ptr = (uint8_t*)data;
     ptr += name_len;
-    query->qtype  =  *(ptr++) << 8;
-    query->qtype  |= *(ptr++)     ;
-    query->qclass =  *(ptr++) << 8;
-    query->qclass |= *(ptr++)     ;
+    question->qtype  =  *(ptr++) << 8;
+    question->qtype  |= *(ptr++)     ;
+    question->qclass =  *(ptr++) << 8;
+    question->qclass |= *(ptr++)     ;
 
     return true;
 }
 
-const char *dns_question_to_string(const dns_question_t *query, char *buf, uint32_t buf_size)
+const char *dns_question_to_string(const dns_question_t *question, char *buf, uint32_t buf_size)
 {
-    if (NULL == query || NULL == query->qname || NULL == buf) {
+    if (NULL == question || NULL == question->qname || NULL == buf) {
         return NULL;
     }
 
-    int query_len = dns_question_length(query);
-    if (query_len < 1 || buf_size < query_len * 3) {
+    int question_len = dns_question_length(question);
+    if (question_len < 1 || buf_size < question_len * 3) {
         return NULL;
     }
 
-    uint8_t *serialize_buf = (uint8_t*)malloc(query_len);
+    uint8_t *serialize_buf = (uint8_t*)malloc(question_len);
     if (NULL == serialize_buf) {
         return NULL;
     }
 
-    int serialize_len = dns_question_serialize(query, serialize_buf, query_len);
+    int serialize_len = dns_question_serialize(question, serialize_buf, question_len);
     if (serialize_len < 1) {
         free(serialize_buf);
         return NULL;
@@ -230,17 +231,19 @@ const char *dns_question_to_string(const dns_question_t *query, char *buf, uint3
     char name_encoded[256] = {0};
     snprintf(buf,
              buf_size,
-             "dns_question(%d): [%s]\n"
+             "DNS Question(%d): [%s]\n"
              "  |-encoded: %s\n"
              "  |-qname  : %s\n"
-             "  |-qtype  : %s\n"
-             "  |-qclass : %s\n",
-             query_len,
+             "  |-qtype  : %u - %s\n"
+             "  |-qclass : %u - %s\n",
+             question_len,
              hexstr_buf,
-             dns_name_encoded_string(query->qname, name_encoded, sizeof(name_encoded)),
-             dns_name_decode(query->qname, name_unencoded, sizeof(name_unencoded)),
-             dns_type_name(query->qtype),
-             dns_class_name(query->qclass));
+             dns_name_encoded_string(question->qname, name_encoded, sizeof(name_encoded)),
+             dns_name_decode(question->qname, name_unencoded, sizeof(name_unencoded)),
+             question->qtype,
+             dns_type_name(question->qtype),
+             question->qclass,
+             dns_class_name(question->qclass));
 
     free(serialize_buf);
     free(hexstr_buf);
@@ -251,25 +254,25 @@ const char *dns_question_to_string(const dns_question_t *query, char *buf, uint3
 #ifdef DNS_QUERY_TEST
 int main(int argc, char **argv)
 {
-    dns_question_t query;
+    dns_question_t question;
     char        buf[1024];
 
-    memset(&query, 0, sizeof(query));
+    memset(&question, 0, sizeof(question));
 
-    dns_question_set_qname(&query, "a.looooooooooong.example.com");
-    dns_question_set_qtype(&query, DNS_TYPE_A);
-    dns_question_set_qclass(&query, DNS_CLASS_IN);
+    dns_question_set_qname(&question, "a.looooooooooong.example.com");
+    dns_question_set_qtype(&question, DNS_TYPE_A);
+    dns_question_set_qclass(&question, DNS_CLASS_IN);
 
-    dns_question_to_string(&query, buf, sizeof(buf));
+    dns_question_to_string(&question, buf, sizeof(buf));
     printf("%s\n", buf);
     uint8_t serialize_buf[1024];
-    int     serialize_len = dns_question_serialize(&query, serialize_buf, sizeof(serialize_buf));
-    dns_question_t query2;
-    dns_question_init(&query2);
-    dns_question_deserialize(&query2, serialize_buf, serialize_len);
-    dns_question_to_string(&query2, buf, sizeof(buf));
+    int     serialize_len = dns_question_serialize(&question, serialize_buf, sizeof(serialize_buf));
+    dns_question_t question2;
+    dns_question_init(&question2);
+    dns_question_deserialize(&question2, serialize_buf, serialize_len);
+    dns_question_to_string(&question2, buf, sizeof(buf));
     printf("%s\n", buf);
-    printf("%s\n", dns_question_equal(&query, &query2) ? "query == qeury2" : "query != query2");
+    printf("%s\n", dns_question_equal(&question, &question2) ? "question == qeury2" : "question != question2");
 
     return 0;
 }

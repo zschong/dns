@@ -23,148 +23,148 @@ typedef struct {
 
 /**
  * @brief 初始化资源记录结构体
- * @param record 资源记录结构体指针
+ * @param answer 资源记录结构体指针
  * @return bool 成功返回true，失败返回false
  * */
-bool dns_answer_init(dns_answer_t *record);
+bool dns_answer_init(dns_answer_t *answer);
 
 /**
  * @brief 清空资源记录结构体
- * @param record 资源记录结构体指针
+ * @param answer 资源记录结构体指针
  * @return bool 成功返回true，失败返回false
  * */
-bool dns_answer_clear(dns_answer_t *record);
+bool dns_answer_clear(dns_answer_t *answer);
 
 /**
  * @brief 设置资源记录的域名
- * @param record 资源记录结构体指针
+ * @param answer 资源记录结构体指针
  * @param name 域名指针
  * @return bool 成功返回true，失败返回false
  */
-bool dns_answer_set_name(dns_answer_t *record, const char *name);
+bool dns_answer_set_name(dns_answer_t *answer, const char *name);
 
 /**
  * @brief 设置资源记录的类型
- * @param record 资源记录结构体指针
+ * @param answer 资源记录结构体指针
  * @param type 资源记录类型
  * @return bool 成功返回true，失败返回false
  */
-bool dns_answer_set_type(dns_answer_t *record, dns_type_t rtype);
+bool dns_answer_set_type(dns_answer_t *answer, dns_type_t rtype);
 
 /**
  * @brief 设置资源记录的生存时间
- * @param record 资源记录结构体指针
+ * @param answer 资源记录结构体指针
  * @param rttl 生存时间
  * @return bool 成功返回true，失败返回false
  */
-bool dns_answer_set_ttl(dns_answer_t *record, uint32_t rttl);
+bool dns_answer_set_ttl(dns_answer_t *answer, uint32_t rttl);
 
 /**
  * @brief 设置资源记录的类
- * @param record 资源记录结构体指针
+ * @param answer 资源记录结构体指针
  * @param rclass 资源记录类
  * @return bool 成功返回true，失败返回false
  */
-bool dns_answer_set_class(dns_answer_t *record, dns_class_t rclass);
+bool dns_answer_set_class(dns_answer_t *answer, dns_class_t rclass);
 
 /**
  * @brief 设置资源记录的数据
- * @param record 资源记录结构体指针
+ * @param answer 资源记录结构体指针
  * @param data 数据指针
  * @param length 数据长度
  * @return bool 成功返回true，失败返回false
  */
-bool dns_answer_set_data(dns_answer_t *record, const uint8_t *data, uint16_t length);
+bool dns_answer_set_data(dns_answer_t *answer, const uint8_t *data, uint16_t length);
 ;
 
 /**
  * @brief 获取资源记录的域名
- * @param record 资源记录结构体指针
+ * @param answer 资源记录结构体指针
  * @return const char* 域名指针，失败返回NULL
  */
-const char *dns_answer_get_name(const dns_answer_t *record);
+const char *dns_answer_get_name(const dns_answer_t *answer);
 ;
 
 /**
  * @brief 获取资源记录的类型
- * @param record 资源记录结构体指针
+ * @param answer 资源记录结构体指针
  * @return uint16_t 资源记录类型
  * */
-uint16_t dns_answer_get_type(const dns_answer_t *record);
+uint16_t dns_answer_get_type(const dns_answer_t *answer);
 
 /**
  * @brief 获取资源记录的类
- * @param record 资源记录结构体指针
+ * @param answer 资源记录结构体指针
  * @return uint16_t 资源记录类
  * */
-uint16_t dns_answer_get_class(const dns_answer_t *record);
+uint16_t dns_answer_get_class(const dns_answer_t *answer);
 
 /**
  * @brief 获取资源记录的生存时间
- * @param record 资源记录结构体指针
+ * @param answer 资源记录结构体指针
  * @return uint32_t 生存时间
  */
-uint32_t dns_answer_get_ttl(const dns_answer_t *record);
+uint32_t dns_answer_get_ttl(const dns_answer_t *answer);
 
 /**
  * @brief 获取资源记录的数据长度
- * @param record 资源记录结构体指针
+ * @param answer 资源记录结构体指针
  * @return uint16_t 数据长度
  */
-uint16_t dns_answer_get_length(const dns_answer_t *record);
+uint16_t dns_answer_get_length(const dns_answer_t *answer);
 
 /**
  * @brief 获取资源记录的数据
- * @param record 资源记录结构体指针
+ * @param answer 资源记录结构体指针
  * @return uint8_t* 数据指针
  * */
-uint8_t *dns_answer_get_data(const dns_answer_t *record);
+uint8_t *dns_answer_get_data(const dns_answer_t *answer);
 ;
 
 /**
  * @brief 获取资源记录整体长度
- * @param record 资源记录结构体指针
+ * @param answer 资源记录结构体指针
  * @return uint32_t 资源记录长度
  * */
-uint32_t dns_answer_length(const dns_answer_t *record);
+uint32_t dns_answer_length(const dns_answer_t *answer);
 ;
 
 /**
  * @brief 比较两个资源记录是否相同
- * @param record1 资源记录结构体指针1
- * @param record2 资源记录结构体指针2
+ * @param answer1 资源记录结构体指针1
+ * @param answer2 资源记录结构体指针2
  * @return bool 相同返回true，不同返回false
  * */
-bool dns_answer_equal(const dns_answer_t *record1, const dns_answer_t *record2);
+bool dns_answer_equal(const dns_answer_t *answer1, const dns_answer_t *answer2);
 
 /**
  * @brief DNS资源记录序列化
- * @param[in] record 资源记录结构体指针
+ * @param[in] answer 资源记录结构体指针
  * @param[out] buf 缓冲区指针
  * @param[in] buf_zie 缓冲区大小
  * @return int 序列化后的数据长度，失败返回0
  */
-int  dns_answer_serialize(const dns_answer_t *record, uint8_t *buf, size_t buf_size);
+int  dns_answer_serialize(const dns_answer_t *answer, uint8_t *buf, size_t buf_size);
 ;
 
 /**
  * @brief DNS资源记录反序列化
- * @param[out] record 资源记录结构体指针
+ * @param[out] answer 资源记录结构体指针
  * @param[in] data 序列化数据
  * @param[in] data_len 数据长度
  * @return int 反序列化消耗的数据长度，失败返回0
  */
-int dns_answer_deserialize(dns_answer_t *record, const uint8_t *data, size_t data_len);
+int dns_answer_deserialize(dns_answer_t *answer, const uint8_t *data, size_t data_len);
 ;
 
 /**
  * @brief 将资源记录转换为字符串
- * @param record 资源记录结构体指针
+ * @param answer 资源记录结构体指针
  * @param buf 字符串缓冲区指针
  * @param buf_size 字符串缓冲区大小
  * @return const char* 字符串指针
  */
-const char *dns_answer_to_string(dns_answer_t *record, char *buf, uint32_t buf_size);
+const char *dns_answer_to_string(dns_answer_t *answer, char *buf, uint32_t buf_size);
 
 #ifdef __cplusplus
 }

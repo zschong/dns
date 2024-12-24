@@ -63,73 +63,73 @@ typedef enum {
 const char* dns_type_name(int qtype) {
     switch (qtype) {
         case 1:
-            return "A (Address record)";
+            return "A (Address answer)";
         case 2:
-            return "NS (Name server record)";
+            return "NS (Name server answer)";
         case 5:
-            return "CNAME (Canonical name record)";
+            return "CNAME (Canonical name answer)";
         case 6:
-            return "SOA (Start of Authority record)";
+            return "SOA (Start of Authority answer)";
         case 12:
-            return "PTR (Pointer record)";
+            return "PTR (Pointer answer)";
         case 15:
-            return "MX (Mail exchange record)";
+            return "MX (Mail exchange answer)";
         case 16:
-            return "TXT (Text record)";
+            return "TXT (Text answer)";
         case 28:
-            return "AAAA (IPv6 address record)";
+            return "AAAA (IPv6 address answer)";
         case 33:
-            return "SRV (Service record)";
+            return "SRV (Service answer)";
         case 35:
-            return "NAPTR (Naming Authority Pointer record)";
+            return "NAPTR (Naming Authority Pointer answer)";
         case 39:
-            return "DNAME (Delegation Name record)";
+            return "DNAME (Delegation Name answer)";
         case 44:
-            return "OPT (Option record)";
+            return "OPT (Option answer)";
         case 47:
-            return "SSHFP (SSH Public Key Fingerprint record)";
+            return "SSHFP (SSH Public Key Fingerprint answer)";
         case 50:
-            return "NSEC (Next Secure record)";
+            return "NSEC (Next Secure answer)";
         case 51:
-            return "DNSKEY (DNS Key record)";
+            return "DNSKEY (DNS Key answer)";
         case 52:
-            return "DHCID (DHCP Identifier record)";
+            return "DHCID (DHCP Identifier answer)";
         case 53:
-            return "NSEC3 (Next Secure record version 3)";
+            return "NSEC3 (Next Secure answer version 3)";
         case 54:
-            return "NSEC3PARAM (NSEC3 Parameters record)";
+            return "NSEC3PARAM (NSEC3 Parameters answer)";
         case 55:
-            return "TLSA (TLSA certificate association record)";
+            return "TLSA (TLSA certificate association answer)";
         case 65:
-            return "HIP (Host Identity Protocol record)";
+            return "HIP (Host Identity Protocol answer)";
         case 99:
-            return "SPF (Sender Policy Framework record)";
+            return "SPF (Sender Policy Framework answer)";
         case 108:
-            return "EUI48 (MAC address (EUI-48) record)";
+            return "EUI48 (MAC address (EUI-48) answer)";
         case 109:
-            return "EUI64 (MAC address (EUI-64) record)";
+            return "EUI64 (MAC address (EUI-64) answer)";
         case 249:
-            return "TKEY (Transaction Key record)";
+            return "TKEY (Transaction Key answer)";
         case 250:
-            return "TSIG (Transaction Signature record)";
+            return "TSIG (Transaction Signature answer)";
         case 252:
-            return "AXFR (Authoritative Zone Transfer record)";
+            return "AXFR (Authoritative Zone Transfer answer)";
         case 253:
-            return "MAILB (Mailbox record)";
+            return "MAILB (Mailbox answer)";
         case 254:
-            return "MAILA (Mail Agent record)";
+            return "MAILA (Mail Agent answer)";
         case 255:
-            return "ANY (Any record)";
+            return "ANY (Any answer)";
         case 256:
-            return "URI (Uniform Resource Identifier record)";
+            return "URI (Uniform Resource Identifier answer)";
         case 257:
-            return "CAA (Certification Authority Authorization record)";
+            return "CAA (Certification Authority Authorization answer)";
         case 32768:
-            return "TA (DNSSEC Trust Authorities record)";
+            return "TA (DNSSEC Trust Authorities answer)";
         case 32769:
-            return "DLV (DNSSEC Lookaside Validation record)";
+            return "DLV (DNSSEC Lookaside Validation answer)";
         default:
-            return "UNKNOWN (Unknown record type)";
+            return "UNKNOWN (Unknown answer type)";
     }
 }
 ```

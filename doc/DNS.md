@@ -1,7 +1,7 @@
 # DNS 请求流程
 
 ```shell
-+----------------+   query    +--------------------+
++----------------+   question    +--------------------+
 |   Nameserver   |<-----------|        User        |
 | 192.168.18.135 |            |   192.168.18.136   |
 | (example.com.) |----------->| (user.example.com) |
@@ -80,7 +80,7 @@ void dns_header_print(const dns_header_t *header) {
     printf("Transaction ID: 0x%04X\n"                                                                          , header->transaction_id );
     printf("Flags: 0x%04X\n"                                                                                   , header->flags          );
     printf("  QR    : %u (Query/Response: 0=Query, 1=Response)\n"                                              , flags . qr             );
-    printf("  OPCODE: %u (Operation Code: 0=Standard query, 1=Inverse query, 2=Server status request, etc.)\n" , flags . opcode         );
+    printf("  OPCODE: %u (Operation Code: 0=Standard question, 1=Inverse question, 2=Server status request, etc.)\n" , flags . opcode         );
     printf("  AA    : %u (Authoritative Answer: 0=Not authoritative, 1=Authoritative)\n"                       , flags . aa             );
     printf("  TC    : %u (Truncated: 0=Not truncated, 1=Truncated)\n"                                          , flags . tc             );
     printf("  RD    : %u (Recursion Desired: 0=No recursion, 1=Recursion desired)\n"                           , flags . rd             );
