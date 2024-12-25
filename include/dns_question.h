@@ -1,4 +1,7 @@
 #pragma once
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <arpa/inet.h>
 #include <stdbool.h>
@@ -138,3 +141,7 @@ int dns_question_deserialize(dns_question_t *question, const uint8_t *src, uint1
  * */
 const char *dns_question_to_string(const dns_question_t *question, char *buf, uint32_t buf_size);
 ;
+
+#ifdef __cplusplus
+}
+#endif
