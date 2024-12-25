@@ -45,7 +45,7 @@ bool dns_message_clear(dns_message_t *message);
  * @return true 成功
  * @return false 失败
  */
-bool dns_message_add_question(dns_message_t *message, dns_question_t *question);
+bool dns_message_add_question(dns_message_t *message, const dns_question_t *question);
 ;
 
 /**
@@ -55,7 +55,7 @@ bool dns_message_add_question(dns_message_t *message, dns_question_t *question);
  * @return true 成功
  * @return false 失败
  */
-bool dns_message_add_anser(dns_message_t *message, dns_answer_t *answer);
+bool dns_message_add_answer(dns_message_t *message, const dns_answer_t *answer);
 ;
 
 /**

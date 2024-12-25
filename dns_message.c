@@ -24,6 +24,7 @@ bool dns_message_clear(dns_message_t *message)
 
     if (NULL != message->questions) {
         free(message->questions);
+        message->questions = NULL;
     }
 
     for (int i = 0; i < message->header.answers_count; i++) {
@@ -32,13 +33,14 @@ bool dns_message_clear(dns_message_t *message)
 
     if (NULL != message->answers) {
         free(message->answers);
+        message->answers = NULL;
     }
 
     memset(message, 0, sizeof(dns_message_t));
     return true;
 }
 
-bool dns_message_add_question(dns_message_t *message, dns_question_t *question)
+bool dns_message_add_question(dns_message_t *message, const dns_question_t *question)
 {
     if (NULL == message || NULL == question) {
         return false;
@@ -82,7 +84,7 @@ bool dns_message_add_question(dns_message_t *message, dns_question_t *question)
  * @return true 成功
  * @return false 失败
  */
-bool dns_message_add_answer(dns_message_t *message, dns_answer_t *answer)
+bool dns_message_add_answer(dns_message_t *message, const dns_answer_t *answer)
 {
     if (NULL == message || NULL == answer) {
         return false;
