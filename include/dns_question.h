@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include "dns_type.h"
+#include "dns_class.h"
 
 // DNS查询问题结构
 typedef struct {
@@ -45,7 +47,7 @@ bool dns_question_set_qname(dns_question_t *question, const char *domain_name);
  * @param[in] qtype 查询类型
  * @return void
  * */
-bool dns_question_set_qtype(dns_question_t *question, uint16_t qtype);
+bool dns_question_set_qtype(dns_question_t *question, dns_type_t qtype);
 ;
 
 /**
@@ -54,7 +56,7 @@ bool dns_question_set_qtype(dns_question_t *question, uint16_t qtype);
  * @param[in] qclass 查询类
  * @return void
  * */
-bool dns_question_set_qclass(dns_question_t *question, uint16_t qclass);
+bool dns_question_set_qclass(dns_question_t *question, dns_class_t qclass);
 ;
 
 /**
@@ -70,7 +72,7 @@ const char *dns_question_get_qname(const dns_question_t *question);
  * @param[in] question DNS查询问题结构
  * @return uint16_t 查询类型
  * */
-uint16_t dns_question_get_qtype(const dns_question_t *question);
+dns_type_t dns_question_get_qtype(const dns_question_t *question);
 ;
 
 /**
@@ -78,7 +80,7 @@ uint16_t dns_question_get_qtype(const dns_question_t *question);
  * @param[in] question DNS查询问题结构
  * @return uint16_t 查询类
  * */
-uint16_t dns_question_get_qclass(const dns_question_t *dns_question_t);
+dns_class_t dns_question_get_qclass(const dns_question_t *dns_question_t);
 ;
 
 /**
@@ -96,6 +98,15 @@ uint32_t dns_question_length(const dns_question_t *question);
  * @return bool 相等返回true，否则返回false
  * */
 bool dns_question_equal(const dns_question_t *question1, const dns_question_t *question2);
+;
+
+/**
+ * @brief 复制DNS查询问题
+ * @param[out] dst 目标DNS查询问题结构
+ * @param[in] src 源DNS查询问题结构
+ * @return bool 克隆成功返回true，否则返回false
+ * */
+bool dns_question_copy(dns_question_t *dst, const dns_question_t *src);
 ;
 
 /**

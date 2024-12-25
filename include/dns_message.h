@@ -12,7 +12,7 @@ extern "C" {
  * @brief DNS消息定义
  * @param header DNS消息头
  * @param questions DNS查询列表，如果为空，则表示该消息为响应消息
- * @param responses DNS响应列表，如果为空，则表示该消息为查询消息
+ * @param ansers DNS响应列表，如果为空，则表示该消息为查询消息
  */
 typedef struct dns_message {
     dns_header_t    header;
@@ -55,7 +55,7 @@ bool dns_message_add_question(dns_message_t *message, dns_question_t *question);
  * @return true 成功
  * @return false 失败
  */
-bool dns_message_add_response(dns_message_t *message, dns_answer_t *answer);
+bool dns_message_add_anser(dns_message_t *message, dns_answer_t *answer);
 ;
 
 /**

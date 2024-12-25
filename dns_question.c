@@ -54,7 +54,7 @@ bool dns_question_set_qname(dns_question_t *question, const char *domain_name)
     return !!question->qname;
 }
 
-bool dns_question_set_qtype(dns_question_t *question, uint16_t qtype)
+bool dns_question_set_qtype(dns_question_t *question, dns_type_t qtype)
 {
     if (NULL == question) {
         return false;
@@ -63,7 +63,7 @@ bool dns_question_set_qtype(dns_question_t *question, uint16_t qtype)
     return true;
 }
 
-bool dns_question_set_qclass(dns_question_t *question, uint16_t qclass)
+bool dns_question_set_qclass(dns_question_t *question, dns_class_t qclass)
 {
     if (NULL == question) {
         return false;
@@ -80,20 +80,20 @@ const char *dns_question_get_qname(const dns_question_t *question)
     return question->qname;
 }
 
-uint16_t dns_question_get_qtype(const dns_question_t *question)
+dns_type_t dns_question_get_qtype(const dns_question_t *question)
 {
     if (NULL == question) {
         return 0;
     }
-    return (question->qtype);
+    return (dns_type_t)(question->qtype);
 }
 
-uint16_t dns_question_get_qclass(const dns_question_t *question)
+dns_class_t dns_question_get_qclass(const dns_question_t *question)
 {
     if (NULL == question) {
         return 0;
     }
-    return (question->qclass);
+    return (dns_class_t)(question->qclass);
 }
 
 uint32_t dns_question_length(const dns_question_t *question)
@@ -102,7 +102,14 @@ uint32_t dns_question_length(const dns_question_t *question)
         return 0;
     }
 
-    return strlen(question->qname) + 1 + sizeof(question->qtype) + sizeof(question->qclass);
+    uint32_t question_length = 0;
+    if (question->qname) {
+        question_length += strlen(question->qname) + 1;
+    }
+    question_length += sizeof(question->qtype);
+    question_length += sizeof(question->qclass);
+
+    return question_length;
 }
 
 bool dns_question_equal(const dns_question_t *question1, const dns_question_t *question2)
@@ -137,6 +144,26 @@ bool dns_question_equal(const dns_question_t *question1, const dns_question_t *q
     }
 
     return strcmp(question1->qname, question2->qname) == 0;
+}
+
+bool dns_question_copy(dns_question_t *dst, const dns_question_t *src)
+{
+    if (NULL == dst || NULL == src) {
+        return false;
+    }
+
+    if (NULL == src->qname) {
+        return false;
+    }
+
+    if (dst->qname) {
+        free(dst->qname);
+    }
+
+    dst->qname = strdup(src->qname);
+    dst->qtype = src->qtype;
+    dst->qclass = src->qclass;
+    return true;
 }
 
 int dns_question_serialize(const dns_question_t *question, uint8_t *buf, uint16_t buf_size)
@@ -189,7 +216,7 @@ int dns_question_deserialize(dns_question_t *question, const uint8_t *data, uint
     question->qclass =  *(ptr++) << 8;
     question->qclass |= *(ptr++)     ;
 
-    return true;
+    return ptr - data;
 }
 
 const char *dns_question_to_string(const dns_question_t *question, char *buf, uint32_t buf_size)
@@ -232,8 +259,7 @@ const char *dns_question_to_string(const dns_question_t *question, char *buf, ui
     snprintf(buf,
              buf_size,
              "DNS Question(%d): [%s]\n"
-             "  |-encoded: %s\n"
-             "  |-qname  : %s\n"
+             "  |-qname  : %s - %s\n"
              "  |-qtype  : %u - %s\n"
              "  |-qclass : %u - %s\n",
              question_len,

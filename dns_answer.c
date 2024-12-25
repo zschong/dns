@@ -63,6 +63,28 @@ bool dns_answer_set_name(dns_answer_t *answer, const char *name)
     return true;
 }
 
+bool dns_answer_dup_name(dns_answer_t *answer, const char *name)
+{
+    if (NULL == answer || NULL == name) {
+        return false;
+    }
+
+    size_t rname_len = strlen(name) + 1;
+    char  *rname     = (char *)malloc(rname_len);
+    if (NULL == rname) {
+        return false;
+    }
+
+    if (answer->rname) {
+        free(answer->rname);
+        answer->rname = NULL;
+    }
+
+    snprintf(rname, rname_len, "%s", name);
+    answer->rname = rname;
+    return true;
+}
+
 bool dns_answer_set_type(dns_answer_t *answer, dns_type_t rtype)
 {
     if (NULL == answer) {
@@ -107,11 +129,13 @@ bool dns_answer_set_ttl(dns_answer_t *answer, uint32_t ttl)
 bool dns_answer_set_data(dns_answer_t *answer, const uint8_t *data, uint16_t length)
 {
     if (NULL == answer || NULL == data || length < 1) {
+        printf("%s, %d\n", __func__, __LINE__);
         return false;
     }
 
     uint8_t *rdata = (uint8_t *)malloc(length);
     if (NULL == rdata) {
+        printf("%s, %d\n", __func__, __LINE__);
         return false;
     }
     memcpy(rdata, data, length);
@@ -121,7 +145,7 @@ bool dns_answer_set_data(dns_answer_t *answer, const uint8_t *data, uint16_t len
         answer->rdata = NULL;
     }
 
-    answer->rdata     = rdata;
+    answer->rdata   = rdata;
     answer->rlength = length;
     return true;
 }
@@ -186,19 +210,23 @@ uint32_t dns_answer_length(const dns_answer_t *answer)
         return 0;
     }
 
-    int ptr_len = sizeof(answer->rname) + sizeof(answer->rdata);
-    int data_len = answer->rlength;
-    int name_len = 0;
+    uint32_t answer_length = 0;
     if (answer->rname) {
-        name_len = strlen(answer->rname) + 1;
+        answer_length = strlen(answer->rname) + 1;
     }
+    answer_length += sizeof(answer->rtype);
+    answer_length += sizeof(answer->rclass);
+    answer_length += sizeof(answer->rttl);
+    answer_length += sizeof(answer->rlength);
+    answer_length += answer->rlength;
 
-    return sizeof(dns_answer_t) + name_len + data_len - ptr_len;
+    return answer_length;
 }
 
 bool dns_answer_equal(const dns_answer_t *answer1, const dns_answer_t *answer2)
 {
     if (NULL == answer1 || NULL == answer2) {
+        printf("%s, %d\n", __func__, __LINE__);
         return false;
     }
 
@@ -209,8 +237,33 @@ bool dns_answer_equal(const dns_answer_t *answer1, const dns_answer_t *answer2)
     || dns_answer_length(answer1) != dns_answer_length(answer2)
     || memcmp(answer1->rdata, answer2->rdata, answer1->rlength) != 0
     || strcmp(answer1->rname, answer2->rname) != 0) {
+        printf("%s, %d\n", __func__, __LINE__);
         return false;
     }
+
+    return true;
+}
+
+bool dns_answer_copy(dns_answer_t *dst, const dns_answer_t *src)
+{
+    if (NULL == dst || NULL == src) {
+        printf("%s, %d\n", __func__, __LINE__);
+        return false;
+    }
+
+    dns_answer_clear(dst);
+    dst->rname = strdup(src->rname);
+    dst->rtype = src->rtype;
+    dst->rclass = src->rclass;
+    dst->rttl = src->rttl;
+    dst->rlength = src->rlength;
+    dst->rdata = (uint8_t *)malloc(src->rlength);
+    if (NULL == dst->rdata) {
+        printf("%s, %d\n", __func__, __LINE__);
+        dns_answer_clear(dst);
+        return false;
+    }
+    memcpy(dst->rdata, src->rdata, src->rlength);
 
     return true;
 }
@@ -218,12 +271,14 @@ bool dns_answer_equal(const dns_answer_t *answer1, const dns_answer_t *answer2)
 int dns_answer_serialize(const dns_answer_t *answer, uint8_t *buf, size_t buf_size)
 {
     if (NULL == answer || NULL == buf) {
+        printf("%s, %d\n", __func__, __LINE__);
         return 0;
     }
 
-    int name_len = strlen(answer->rname) + 1;
+    int name_len = strlen(answer->rname);
     int answer_len = dns_answer_length(answer);
     if (buf_size < answer_len) {
+        printf("%s, %d\n", __func__, __LINE__);
         return 0;
     }
 
@@ -242,13 +297,15 @@ int dns_answer_serialize(const dns_answer_t *answer, uint8_t *buf, size_t buf_si
     *(ptr++) = (answer->rlength >> 8 ) & 0xFF;
     *(ptr++) = (answer->rlength >> 0 ) & 0xFF;
     memcpy(ptr, answer->rdata, answer->rlength);
+    ptr += answer->rlength;
 
-    return answer_len;
+    return ptr - buf;
 }
 
 int dns_answer_deserialize(dns_answer_t *answer, const uint8_t *data, size_t data_len)
 {
     if (NULL == answer || NULL == data) {
+        printf("%s, %d\n", __func__, __LINE__);
         return 0;
     }
 
@@ -258,15 +315,16 @@ int dns_answer_deserialize(dns_answer_t *answer, const uint8_t *data, size_t dat
         return 0;
     }
 
-    int name_len = strlen((const char *)data) + 1;
-    if (name_len > 1) {
+    int name_len = strlen((const char *)data);
+    if (name_len > 0) {
         answer->rname = strdup((char*)data);
         if (NULL == answer->rname) {
+            printf("%s, %d\n", __func__, __LINE__);
             return 0;
         }
     }
 
-    const uint8_t *ptr = data + name_len;
+    const uint8_t *ptr = data + name_len + 1;
     answer->rtype   =  *(ptr++) << 8 ;
     answer->rtype   |= *(ptr++)      ;
     answer->rclass  =  *(ptr++) << 8 ;
@@ -282,6 +340,7 @@ int dns_answer_deserialize(dns_answer_t *answer, const uint8_t *data, size_t dat
             return 0;
         }
     }
+    ptr += answer->rlength;
 
     return ptr - data;
 }
@@ -289,6 +348,7 @@ int dns_answer_deserialize(dns_answer_t *answer, const uint8_t *data, size_t dat
 const char *dns_answer_to_string(dns_answer_t *answer, char *buf, uint32_t buf_size)
 {
     if (NULL == answer) {
+        printf("%s, %d\n", __func__, __LINE__);
         return NULL;
     }
 
@@ -296,6 +356,7 @@ const char *dns_answer_to_string(dns_answer_t *answer, char *buf, uint32_t buf_s
     int hexstr_len = (answer_len * 2 + 1);
     char *hexstr_buf = (char*)malloc(hexstr_len);
     if (NULL == hexstr_buf) {
+        printf("%s, %d\n", __func__, __LINE__);
         return NULL;
     }
 
@@ -309,12 +370,14 @@ const char *dns_answer_to_string(dns_answer_t *answer, char *buf, uint32_t buf_s
     if (serialize_len != answer_len) {
         free(hexstr_buf);
         free(serialize_buf);
+        printf("%s, %d\n", __func__, __LINE__);
         return NULL;
     }
     const char *hexstr = dns_hexstring(serialize_buf, answer_len, hexstr_buf, hexstr_len);
     if (NULL == hexstr) {
         free(hexstr_buf);
         free(serialize_buf);
+        printf("%s, %d\n", __func__, __LINE__);
         return NULL;
     }
 
@@ -323,6 +386,7 @@ const char *dns_answer_to_string(dns_answer_t *answer, char *buf, uint32_t buf_s
     if (NULL == data_hex) {
         free(hexstr_buf);
         free(serialize_buf);
+        printf("%s, %d\n", __func__, __LINE__);
         return NULL;
     }
 
@@ -332,20 +396,32 @@ const char *dns_answer_to_string(dns_answer_t *answer, char *buf, uint32_t buf_s
         free(hexstr_buf);
         free(serialize_buf);
         free(data_hex);
+        printf("%s, %d\n", __func__, __LINE__);
+        return NULL;
+    }
+
+    char *decode_name = (char*)malloc(name_size);
+    if (NULL == decode_name) {
+        free(hexstr_buf);
+        free(serialize_buf);
+        free(data_hex);
+        free(name);
+        printf("%s, %d\n", __func__, __LINE__);
         return NULL;
     }
 
     snprintf(buf, buf_size, 
             "DNS Answer(%d): [%s]\n"
-            "  |-Name  : %s\n" 
-            "  |-Type  : %u - %s\n"
-            "  |-Class : %u - %s\n"
-            "  |-TTL   : %u - seconds\n"
-            "  |-Length: %u - bytes\n" 
-            "  |-Data  : [%s]\n",
+            "  |-Name   : %s - %s\n" 
+            "  |-Type   : %u - %s\n"
+            "  |-Class  : %u - %s\n"
+            "  |-TTL    : %u - seconds\n"
+            "  |-Length : %u - bytes\n" 
+            "  |-Data   : [%s]\n",
             answer_len,
             hexstr_buf,
             dns_name_encoded_string(answer->rname, name, name_size),
+            dns_name_decode(answer->rname, decode_name, name_size),
             answer->rtype,
             dns_type_name(answer->rtype ),
             answer->rclass,
@@ -358,6 +434,7 @@ const char *dns_answer_to_string(dns_answer_t *answer, char *buf, uint32_t buf_s
     free(hexstr_buf);
     free(data_hex);
     free(name);
+    free(decode_name);
     return buf;
 }
 
@@ -394,7 +471,8 @@ int main()
         return 1;
     }
 
-    if (dns_answer_set_data(&answer, (uint8_t *)"www.baidu.com", 14) == false) {
+    uint8_t ip[] = {192, 168, 1, 1};
+    if (dns_answer_set_data(&answer, ip, sizeof(ip)) == false) {
         printf("dns_answer_set_data failed\n");
         return 1;
     }

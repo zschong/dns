@@ -229,7 +229,7 @@ const char *dns_header_to_string(const dns_header_t *header, char *buf, uint32_t
     snprintf(buf,
              buf_size,
              "DNS Header(%d):[%s]\n"
-             "  |-ID              : %d\n"
+             "  |-ID              : 0x%04x\n"
              "  |-Question Count  : %d\n"
              "  |-Answer Count    : %d\n"
              "  |-Authority Count : %d\n"

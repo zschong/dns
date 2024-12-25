@@ -18,8 +18,16 @@ bool dns_message_clear(dns_message_t *message)
         return false;
     }
 
+    for (int i = 0; i < message->header.questions_count; i++) {
+        dns_question_clear(&message->questions[i]);
+    }
+
     if (NULL != message->questions) {
         free(message->questions);
+    }
+
+    for (int i = 0; i < message->header.answers_count; i++) {
+        dns_answer_clear(&message->answers[i]);
     }
 
     if (NULL != message->answers) {
@@ -36,13 +44,21 @@ bool dns_message_add_question(dns_message_t *message, dns_question_t *question)
         return false;
     }
 
+    // if (message->answers) {
+    //     free(message->answers);
+    //     message->answers = NULL;
+    //     message->header.answers_count = 0;
+    // }
+
     if (NULL == message->questions) {
-        message->questions = (dns_question_t *)malloc(sizeof(dns_question_t));
-        if (NULL == message->questions) {
+        dns_question_t *questions = (dns_question_t *)malloc(sizeof(dns_question_t));
+        if (NULL == questions) {
             return false;
         }
-        memcpy(&message->questions[0], question, sizeof(dns_question_t));
+        dns_question_init(&questions[0]);
+        dns_question_copy(&questions[0], question);
         message->header.questions_count = 1;
+        message->questions = questions;
         return true;
     }
 
@@ -52,9 +68,10 @@ bool dns_message_add_question(dns_message_t *message, dns_question_t *question)
         return false;
     }
 
-    memcpy(&questions[message->header.questions_count], question, sizeof(dns_question_t));
-    message->questions = questions;
+    dns_question_init(&questions[message->header.questions_count]);
+    dns_question_copy(&questions[message->header.questions_count], question);
     message->header.questions_count += 1;
+    message->questions = questions;
     return true;
 }
 
@@ -71,13 +88,21 @@ bool dns_message_add_answer(dns_message_t *message, dns_answer_t *answer)
         return false;
     }
 
+    // if (message->questions) {
+    //     free(message->questions);
+    //     message->questions = NULL;
+    //     message->header.questions_count = 0;
+    // }
+
     if (NULL == message->answers) {
-        message->answers = (dns_answer_t *)malloc(sizeof(dns_answer_t));
-        if (NULL == message->answers) {
+        dns_answer_t *answers = (dns_answer_t *)malloc(sizeof(dns_answer_t));
+        if (NULL == answers) {
             return false;
         }
-        memcpy(&message->answers[0], answer, sizeof(dns_answer_t));
+        dns_answer_init(&answers[0]);
+        dns_answer_copy(&answers[0], answer);
         message->header.answers_count = 1;
+        message->answers = answers;
         return true;
     }
 
@@ -87,9 +112,10 @@ bool dns_message_add_answer(dns_message_t *message, dns_answer_t *answer)
         return false;
     }
 
-    memcpy(&answers[message->header.answers_count], answer, sizeof(dns_answer_t));
-    message->answers = answers;
+    dns_answer_init(&answers[message->header.answers_count]);
+    dns_answer_copy(&answers[message->header.answers_count], answer);
     message->header.answers_count += 1;
+    message->answers = answers;
     return true;
 }
 
@@ -103,12 +129,14 @@ bool dns_message_add_answer(dns_message_t *message, dns_answer_t *answer)
 int  dns_message_serialize(const dns_message_t *message, uint8_t *buffer, size_t buffer_size)
 {
     if (NULL == message || NULL == buffer || buffer_size < 1) {
+        printf("%s, %d\n", __func__, __LINE__);
         return 0;
     }
 
     int buffer_offset = 0;
     int header_offset = dns_header_serialize(&message->header, buffer, buffer_size);
     if (header_offset < 1) {
+        printf("%s, %d\n", __func__, __LINE__);
         return 0;
     }
 
@@ -116,6 +144,7 @@ int  dns_message_serialize(const dns_message_t *message, uint8_t *buffer, size_t
     for (int i = 0; i < message->header.questions_count; i++) {
         int question_offset = dns_question_serialize(&message->questions[i], buffer + buffer_offset, buffer_size - buffer_offset);
         if (question_offset < 1) {
+            printf("%s, %d\n", __func__, __LINE__);
             return 0;
         }
         buffer_offset += question_offset;
@@ -124,6 +153,7 @@ int  dns_message_serialize(const dns_message_t *message, uint8_t *buffer, size_t
     for (int i = 0; i < message->header.answers_count; i++) {
         int answer_offset = dns_answer_serialize(&message->answers[i], buffer + buffer_offset, buffer_size - buffer_offset);
         if (answer_offset < 1) {
+            printf("%s, %d\n", __func__, __LINE__);
             return 0;
         }
         buffer_offset += answer_offset;
@@ -142,12 +172,14 @@ int  dns_message_serialize(const dns_message_t *message, uint8_t *buffer, size_t
 int  dns_message_deserialize(dns_message_t *message, const uint8_t *data, size_t data_len)
 {
     if (NULL == message || NULL == data || data_len < 1) {
+        printf("%s, %d\n", __func__, __LINE__);
         return 0;
     }
 
     int data_offset = 0;
     int header_offset = dns_header_deserialize(&message->header, data, data_len);
     if (header_offset < 1) {
+        printf("%s, %d\n", __func__, __LINE__);
         return 0;
     }
 
@@ -159,11 +191,13 @@ int  dns_message_deserialize(dns_message_t *message, const uint8_t *data, size_t
         int question_offset = dns_question_deserialize(&question, data + data_offset, data_len - data_offset);
         if (question_offset < 1) {
             dns_message_clear(message);
+            printf("%s, %d\n", __func__, __LINE__);
             return 0;
         }
 
         if (dns_message_add_question(message, &question) == false) {
             dns_message_clear(message);
+            printf("%s, %d\n", __func__, __LINE__);
             return 0;
         }
 
@@ -177,15 +211,18 @@ int  dns_message_deserialize(dns_message_t *message, const uint8_t *data, size_t
         int answer_offset = dns_answer_deserialize(&answer, data + data_offset, data_len - data_offset);
         if (answer_offset < 1) {
             dns_message_clear(message);
+            printf("%s, %d\n", __func__, __LINE__);
             return 0;
         }
 
         if (dns_message_add_answer(message, &answer) == false) {
             dns_message_clear(message);
+            printf("%s, %d\n", __func__, __LINE__);
             return 0;
         }
 
         data_offset += answer_offset;
+        dns_answer_clear(&answer);
     }
 
     return data_offset;
@@ -196,6 +233,7 @@ const char* dns_message_to_string(const dns_message_t *message, char *buffer, si
     if (NULL == message || NULL == buffer || buffer_size < 1) {
         return NULL;
     }
+
     size_t serialize_size = 1024;
     uint8_t *serialize_buf = (uint8_t *)malloc(serialize_size);
     if (NULL == serialize_buf) {
@@ -272,6 +310,9 @@ const char* dns_message_to_string(const dns_message_t *message, char *buffer, si
 #ifdef DNS_MESSAGE_TEST
 #include <stdio.h>
 #include "dns_flags.h"
+#include "dns_hexstring.h"
+
+#define SHOW_BUFFER_SIZE (4*1024)
 
 void test_dns_message_request(void)
 {
@@ -299,11 +340,11 @@ void test_dns_message_request(void)
         dns_message_add_question(&msg, &question);
     }
 
-    char info_buf[1024];
+    char info_buf[SHOW_BUFFER_SIZE];
     dns_message_to_string(&msg, info_buf, sizeof(info_buf));
     printf("%s\n", info_buf);
 
-    uint8_t sirerialize_buf[1024];
+    uint8_t sirerialize_buf[SHOW_BUFFER_SIZE];
     int serialize_len = dns_message_serialize(&msg, sirerialize_buf, sizeof(sirerialize_buf));
     if (serialize_len > 0) {
         dns_message_t msg2;
@@ -316,7 +357,7 @@ void test_dns_message_request(void)
     dns_message_clear(&msg);
 }
 
-void test_dns_message_response(void)
+void test_dns_message_anser(void)
 {
     dns_message_t msg;
     dns_header_t *header = &msg.header;
@@ -328,34 +369,45 @@ void test_dns_message_response(void)
     dns_flags_set_qr(&header->flags, DNS_QR_RESPONSE);
     dns_flags_set_opcode(&header->flags, DNS_OPCODE_QUERY);
     dns_flags_set_rcode(&header->flags, DNS_RCODE_NOERROR);
-    dns_header_set_question_count(header, 0);
+    dns_header_set_question_count(header, 1);
     dns_header_set_answer_count(header, 0);
     dns_header_set_authority_count(header, 0);
     dns_header_set_additional_count(header, 0);
+  
+    dns_question_t question;
+    dns_question_init(&question);
+    dns_question_set_qname(&question, "apmode.enplus.com");
+    dns_question_set_qtype(&question, DNS_TYPE_A);
+    dns_question_set_qclass(&question, DNS_CLASS_IN);
+    dns_message_add_question(&msg, &question);
 
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 1; i++) {
         dns_answer_t answer;
         dns_answer_init(&answer);
-        dns_answer_set_name(&answer, "www.baidu.com");
+        // dns_answer_set_name(&answer, "apmode.enplus.com");
+        dns_answer_dup_name(&answer, question.qname);
         dns_answer_set_type(&answer, DNS_TYPE_A);
         dns_answer_set_class(&answer, DNS_CLASS_IN);
         dns_answer_set_ttl(&answer, 3600);
-        dns_answer_set_data(&answer, "192.168.1.1", 11);
+        uint8_t ip[] = {192, 168, 4, 1};
+        dns_answer_set_data(&answer, ip, sizeof(ip));
         dns_message_add_answer(&msg, &answer);
+        dns_answer_clear(&answer);
     }
+    dns_question_clear(&question);
 
-    char info_buf[1024];
+    char info_buf[SHOW_BUFFER_SIZE];
     dns_message_to_string(&msg, info_buf, sizeof(info_buf));
     printf("%s\n", info_buf);
 
-    uint8_t sirerialize_buf[1024];
+    uint8_t sirerialize_buf[SHOW_BUFFER_SIZE];
     int serialize_len = dns_message_serialize(&msg, sirerialize_buf, sizeof(sirerialize_buf));
     if (serialize_len > 0) {
         dns_message_t msg2;
         dns_message_init(&msg2);
         dns_message_deserialize(&msg2, sirerialize_buf, serialize_len);
         dns_message_to_string(&msg2, info_buf, sizeof(info_buf));
-        printf("msg2 hex:\n%s\n", info_buf);
+        printf("%s mst2:\n%s\n", __func__, info_buf);
     }
 
     dns_message_clear(&msg);
@@ -364,7 +416,7 @@ void test_dns_message_response(void)
 int main()
 {
     test_dns_message_request();
-    test_dns_message_response();
+    test_dns_message_anser();
     return 0;
 }
 #endif

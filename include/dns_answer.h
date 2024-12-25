@@ -44,6 +44,14 @@ bool dns_answer_clear(dns_answer_t *answer);
 bool dns_answer_set_name(dns_answer_t *answer, const char *name);
 
 /**
+ * @brief 克隆资源记录的域名
+ * @param answer 资源记录结构体指针
+ * @param name 域名指针
+ * @return const char* 域名指针，失败返回NULL
+ */
+bool dns_answer_dup_name(dns_answer_t *answer, const char *name);
+
+/**
  * @brief 设置资源记录的类型
  * @param answer 资源记录结构体指针
  * @param type 资源记录类型
@@ -135,7 +143,15 @@ uint32_t dns_answer_length(const dns_answer_t *answer);
  * @param answer2 资源记录结构体指针2
  * @return bool 相同返回true，不同返回false
  * */
-bool dns_answer_equal(const dns_answer_t *answer1, const dns_answer_t *answer2);
+bool dns_answer_equal(const dns_answer_t *answer1, const dns_answer_t *answer2);;
+
+/**
+ * @brief 复制资源记录结构体
+ * @param[out] dst 目标资源记录结构体指针
+ * @param[in] src 源资源记录结构体指针
+ * @return bool 成功返回true，失败返回false
+ * */
+bool dns_answer_copy(dns_answer_t *dst, const dns_answer_t *src);;
 
 /**
  * @brief DNS资源记录序列化
